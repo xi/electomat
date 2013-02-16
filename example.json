@@ -1,0 +1,18 @@
+{
+  "questions": ["question1", "question2"],
+  "partys": [
+    {
+      "name": "party1",
+      "answers": {
+        "question1": {"value": 4, "comment": "this is absolutely correct"},
+        "question2": {"value": 2}
+      }
+    },
+    {
+      "name": "party2",
+      "answers": {
+        "question1": {"value": 1}
+      }
+    }
+  ]
+}
