@@ -55,7 +55,7 @@ function electomat_table(o, data) {
 				tr.appendChild(th);
 
 				var th = document.createElement('th')
-					th.innerHTML = 'your choice';
+					th.innerText = 'your choice';
 				tr.appendChild(th);
 
 				foreach(data.partys, electomat_th, {'parent': tr});
@@ -70,7 +70,14 @@ function electomat_table(o, data) {
 
 function electomat_th(party, param) {
 	var th = document.createElement('th');
-		th.innerHTML = party.name;
+		var name = document.createElement('span');
+		name.className = 'name';
+		name.innerText = party.name;
+		th.appendChild(name);
+
+		var similarity = document.createElement('span');
+		similarity.className = 'similarity';
+		th.appendChild(similarity);
 	param.parent.appendChild(th);
 }
 
@@ -78,40 +85,40 @@ function electomat_tr(question, param) {
 	var tr = document.createElement('tr');
 		var td = document.createElement('td');
 			td.className = "question";
-			td.innerHTML = question;
+			td.innerText = question;
 		tr.appendChild(td);
 
 		var td = document.createElement('td');
 			var select = document.createElement('select');
 				var option = document.createElement('option');
 					option.setAttribute('value', -1);
-					option.innerHTML = _("(no opinion)");
+					option.innerText = _("(no opinion)");
 					option.setAttribute('selected', true);
 				select.appendChild(option);
 
 				var option = document.createElement('option');
 					option.setAttribute('value', 0);
-					option.innerHTML = _("I do not agree at all");
+					option.innerText = _("I do not agree at all");
 				select.appendChild(option);
 
 				var option = document.createElement('option');
 					option.setAttribute('value', 1);
-					option.innerHTML = _("I disagree");
+					option.innerText = _("I disagree");
 				select.appendChild(option);
 
 				var option = document.createElement('option');
 					option.setAttribute('value', 2);
-					option.innerHTML = _("neither/nor");
+					option.innerText = _("neither/nor");
 				select.appendChild(option);
 
 				var option = document.createElement('option');
 					option.setAttribute('value', 3);
-					option.innerHTML = _("I agree");
+					option.innerText = _("I agree");
 				select.appendChild(option);
 
 				var option = document.createElement('option');
 					option.setAttribute('value', 4);
-					option.innerHTML = _("I fully agree");
+					option.innerText = _("I fully agree");
 				select.appendChild(option);
 
 				select.setAttribute('onchange', 'electomat_onchange(this)');
@@ -127,7 +134,7 @@ function electomat_td(party, param) {
 		if (party.answers.hasOwnProperty(param.question)) {
 			var answer = party.answers[param.question]
 			if (answer.hasOwnProperty('comment')) {
-				td.innerHTML = answer.comment;
+				td.innerText = answer.comment;
 			}
 			td.setAttribute('data-value', answer.value);
 		}
@@ -150,29 +157,30 @@ function electomat_onchange(select) {
 }
 
 function electomat_similarity(table) {
-	var thead = table.children[0].children[0];
-	var tbody = table.children[1];
+	var rows = table.children[1].children;
 
 	var similarity = [];
-	for (i_party=2; i_party<thead.children.length; i_party++) {
+	for (i_party=2; i_party<rows[0].children.length; i_party++) {
 		var s = 0;
 		var k = 0;
-		for (i=0; i<tbody.children.length; i++) {
-			var tr = tbody.children[i];
-			var td_user = tr.children[1];
-			var td_party = tr.children[i_party];
-			if (td_user.hasAttribute('data-value') && td_party.hasAttribute('data-value')) {
-				var v_user = parseInt(td_user.getAttribute('data-value'), 10);
-				var v_party = parseInt(td_party.getAttribute('data-value'), 10);
-				if (v_user >= 0 && v_party >= 0) {
-					s += (v_user - v_party) * (v_user - v_party);
-					k += 1;
+		for (i=0; i<rows.length; i++) {
+			var vs = [];
+			var td_user = rows[i].children[1];
+			var td_party = rows[i].children[i_party];
+
+			if (td_user.hasAttribute('data-value')) {
+				if (td_party.hasAttribute('data-value')) {
+					var v_user = parseInt(td_user.getAttribute('data-value'), 10);
+					var v_party = parseInt(td_party.getAttribute('data-value'), 10);
+					s += (v_user - v_party) * (v_user - v_party) / 16;
 				}
+				else {
+					s += 1/4;
+				}
+				k++;
 			}
 		}
-		thead.children[i_party].setAttribute('data-similarity', JSON.stringify([k,s]));
-		s = k/(s+1);
-		similarity[i_party] = s;
+		similarity[i_party] = 1 - s/k;
 	}
 	return similarity;
 }
@@ -182,21 +190,53 @@ function electomat_sort(table) {
 	var head = table.children[0].children[0];
 	var rows = table.children[1].children;
 
-	// bubblesort
-	for (i=2; i<rows[0].children.length; i++) {
-		var j = i-1;
-		var s = similarity[i];
-		while (j>=2 && s > similarity[j]) {
-			similarity[j+1] = similarity[j];
-			j--;
-		}
-		similarity[j+1] = s;
-
-		head.insertBefore(head.children[i], head.children[j+1]);
-		for (k=0; k<rows.length; k++) {
-			rows[k].insertBefore(rows[k].children[i], rows[k].children[j+1]);
+	for (i=2; i<head.children.length; i++) {
+		var o = head.children[i].getElementsByClassName('similarity')
+		if (o) {
+			o[0].innerText = ' (' + Math.round(similarity[i] * 100) + '%)';
 		}
 	}
+
+	function moveBefore(i, j) {
+		if (i == j || i == j-1) {return}
+
+		if (i<j) {
+			similarity = [].concat(similarity.slice(0,i), similarity.slice(i+1,j), similarity[i], similarity.slice(j))
+		}
+		else {
+			similarity = [].concat(similarity.slice(0,j), similarity[i], similarity.slice(j,i), similarity.slice(i+1))
+		}
+
+		head.insertBefore(head.children[i], head.children[j]);
+		for (k=0; k<rows.length; k++) {
+			rows[k].insertBefore(rows[k].children[i], rows[k].children[j]);
+		}
+	}
+
+	function quicksort(left, right) {
+		if (left < right) {
+			pivot = left;
+
+			for (i=pivot+1; i<=right; i++) {
+				if (similarity[i] > similarity[pivot]) {
+					moveBefore(i, pivot);
+					pivot++;
+				}
+			}
+
+			quicksort(left, pivot-1);
+			quicksort(pivot+1, right);
+		}
+	}
+
+	function insertionsort() {
+		for (i=2; i<head.children.length; i++) {
+			for (j=i-1; j>=2 && similarity[i] > similarity[j]; j--) {}
+			moveBefore(i, j+1);
+		}
+	}
+
+	quicksort(2, similarity.length-1);
 }
 
 /*** main ***/
