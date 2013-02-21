@@ -66,6 +66,7 @@ function electomat_table(o, data) {
 			foreach(data.questions, electomat_tr, {'parent': tbody, 'partys': data.partys});
 		table.appendChild(tbody);
 	o.parentNode.insertBefore(table, o);
+	o.remove();
 }
 
 function electomat_th(party, param) {
