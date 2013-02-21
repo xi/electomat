@@ -55,7 +55,7 @@ function electomat_table(o, data) {
 				tr.appendChild(th);
 
 				var th = document.createElement('th')
-					th.innerText = 'your choice';
+					th.textContent = 'your choice';
 				tr.appendChild(th);
 
 				foreach(data.partys, electomat_th, {'parent': tr});
@@ -65,14 +65,14 @@ function electomat_table(o, data) {
 		var tbody = document.createElement('tbody');
 			foreach(data.questions, electomat_tr, {'parent': tbody, 'partys': data.partys});
 		table.appendChild(tbody);
-	o.outerHTML = table.outerHTML;
+	o.parentNode.insertBefore(table, o);
 }
 
 function electomat_th(party, param) {
 	var th = document.createElement('th');
 		var name = document.createElement('span');
 		name.className = 'name';
-		name.innerText = party.name;
+		name.textContent = party.name;
 		th.appendChild(name);
 
 		var similarity = document.createElement('span');
@@ -85,40 +85,40 @@ function electomat_tr(question, param) {
 	var tr = document.createElement('tr');
 		var td = document.createElement('td');
 			td.className = "question";
-			td.innerText = question;
+			td.textContent = question;
 		tr.appendChild(td);
 
 		var td = document.createElement('td');
 			var select = document.createElement('select');
 				var option = document.createElement('option');
 					option.setAttribute('value', -1);
-					option.innerText = _("(no opinion)");
+					option.textContent = _("(no opinion)");
 					option.setAttribute('selected', true);
 				select.appendChild(option);
 
 				var option = document.createElement('option');
 					option.setAttribute('value', 0);
-					option.innerText = _("I do not agree at all");
+					option.textContent = _("I do not agree at all");
 				select.appendChild(option);
 
 				var option = document.createElement('option');
 					option.setAttribute('value', 1);
-					option.innerText = _("I disagree");
+					option.textContent = _("I disagree");
 				select.appendChild(option);
 
 				var option = document.createElement('option');
 					option.setAttribute('value', 2);
-					option.innerText = _("neither/nor");
+					option.textContent = _("neither/nor");
 				select.appendChild(option);
 
 				var option = document.createElement('option');
 					option.setAttribute('value', 3);
-					option.innerText = _("I agree");
+					option.textContent = _("I agree");
 				select.appendChild(option);
 
 				var option = document.createElement('option');
 					option.setAttribute('value', 4);
-					option.innerText = _("I fully agree");
+					option.textContent = _("I fully agree");
 				select.appendChild(option);
 
 				select.setAttribute('onchange', 'electomat_onchange(this)');
@@ -134,7 +134,7 @@ function electomat_td(party, param) {
 		if (party.answers.hasOwnProperty(param.question)) {
 			var answer = party.answers[param.question]
 			if (answer.hasOwnProperty('comment')) {
-				td.innerText = answer.comment;
+				td.textContent = answer.comment;
 			}
 			td.setAttribute('data-value', answer.value);
 		}
@@ -144,7 +144,7 @@ function electomat_td(party, param) {
 /*** onchange ***/
 function electomat_onchange(select) {
 	var td = select.parentElement;
-	value = select.selectedOptions[0].value;
+	value = select.children[select.selectedIndex].value;
 	if (value in ["0", "1", "2", "3", "4"]) {
 		td.setAttribute('data-value', value);
 	}
@@ -193,7 +193,7 @@ function electomat_sort(table) {
 	for (i=2; i<head.children.length; i++) {
 		var o = head.children[i].getElementsByClassName('similarity')
 		if (o) {
-			o[0].innerText = ' (' + Math.round(similarity[i] * 100) + '%)';
+			o[0].textContent = ' (' + Math.round(similarity[i] * 100) + '%)';
 		}
 	}
 
