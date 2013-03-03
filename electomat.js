@@ -19,8 +19,8 @@
  */
 
 /*** helper ***/
-window.onDOMReady	=	function(fn) {
-	document.addEventListener("DOMContentLoaded",	fn,	false);
+window.onDOMReady = function(fn) {
+	document.addEventListener("DOMContentLoaded", fn, false);
 };
 
 function foreach(o, fn, param) {
@@ -46,10 +46,8 @@ translations = {
 
 function _(s, env) {
 	while (!env.hasAttribute('lang')) {
-		if (!env.hasOwnProperty('parentElement') || !env.parentElement) {
-			return s;
-		}
-		env = env.parentElement;
+		env = env.parentNode;
+		if (env === document) {return s}
 	}
 	lang = env.getAttribute('lang');
 
@@ -86,7 +84,7 @@ function electomat_load(o, param) {
 function electomat_table(o, data) {
 	var table = document.createElement('table');
 	o.parentNode.insertBefore(table, o);
-	o.remove();
+	o.parentNode.removeChild(o);
 		table.className = "electomat";
 		if (o.hasAttribute('lang')) {
 			table.setAttribute('lang', o.getAttribute('lang'))
@@ -185,7 +183,7 @@ function electomat_td(party, param) {
 
 /*** onchange ***/
 function electomat_onchange(select) {
-	var td = select.parentElement;
+	var td = select.parentNode;
 	value = select.children[select.selectedIndex].value;
 	if (value in ["0", "1", "2", "3", "4"]) {
 		td.setAttribute('data-value', value);
@@ -194,7 +192,7 @@ function electomat_onchange(select) {
 		td.removeAttribute('data-value');
 	}
 
-	var table = td.parentElement.parentElement.parentElement;
+	var table = td.parentNode.parentNode.parentNode;
 	electomat_sort(table);
 }
 
