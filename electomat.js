@@ -11,7 +11,11 @@
  *  In your html, include electomat.js and electomat.css
  *  and create a html element like this:
  *
- *      <div class="electomat" src="example.json"/>
+ *      <div class="electomat" src="example.json" lang="de"/>
+ *
+ *  Currently only english and german language are available.
+ *  Please note that only the controls are translated, not
+ *  the json data. You may solve this server-side.
  */
 
 /*** helper ***/
@@ -27,8 +31,42 @@ function foreach(o, fn, param) {
 	}
 }
 
-// gettext placeholder
-function _(s) {return s;}
+/*** l11n ***/
+translations = {
+	'de': {
+		"(no opinion)": "(keine Meinung)",
+		"I do not agree at all": "stimme überhaupt nicht zu",
+		"I disagree": "stimme nicht zu",
+		"neither/nor": "weder/noch",
+		"I agree": "stimme zu",
+		"I fully agree": "stimme komplett zu",
+		"your choice": "deine Meinung"
+	}
+}
+
+function _(s, env) {
+	while (!env.hasAttribute('lang')) {
+		if (!env.hasOwnProperty('parentElement')) {
+			return s;
+		}
+		env = env.parentElement;
+	}
+	lang = env.getAttribute('lang');
+
+	if (translations.hasOwnProperty(lang)) {
+		if (translations[lang].hasOwnProperty(s)) {
+			return translations[lang][s];
+		}
+	}
+	// try again with tag only, e.g. 'en' instead of 'en-US'
+	lang = lang.split('-')[0]
+	if (translations.hasOwnProperty(lang)) {
+		if (translations[lang].hasOwnProperty(s)) {
+			return translations[lang][s];
+		}
+	}
+	return s;
+}
 
 /*** create table ***/
 function electomat_load(o, param) {
@@ -47,91 +85,95 @@ function electomat_load(o, param) {
 
 function electomat_table(o, data) {
 	var table = document.createElement('table');
+	o.parentNode.insertBefore(table, o);
+	o.remove();
 		table.className = "electomat";
+		if (o.hasAttribute('lang')) {
+			table.setAttribute('lang', o.getAttribute('lang'))
+		}
 
 		var thead = document.createElement('thead');
+		table.appendChild(thead);
 			var tr = document.createElement('tr');
+			thead.appendChild(tr);
 				var th = document.createElement('th');
 				tr.appendChild(th);
 
 				var th = document.createElement('th')
-					th.textContent = 'your choice';
 				tr.appendChild(th);
+					th.textContent = _("your choice", table);
 
 				foreach(data.partys, electomat_th, {'parent': tr});
-			thead.appendChild(tr);
-		table.appendChild(thead);
 
 		var tbody = document.createElement('tbody');
-			foreach(data.questions, electomat_tr, {'parent': tbody, 'partys': data.partys});
 		table.appendChild(tbody);
-	o.parentNode.insertBefore(table, o);
-	o.remove();
+			foreach(data.questions, electomat_tr, {'parent': tbody, 'partys': data.partys});
 }
 
 function electomat_th(party, param) {
 	var th = document.createElement('th');
+	param.parent.appendChild(th);
 		var name = document.createElement('span');
+		th.appendChild(name);
 		name.className = 'name';
 		name.textContent = party.name;
-		th.appendChild(name);
 
 		var similarity = document.createElement('span');
-		similarity.className = 'similarity';
 		th.appendChild(similarity);
-	param.parent.appendChild(th);
+		similarity.className = 'similarity';
 }
 
 function electomat_tr(question, param) {
 	var tr = document.createElement('tr');
+	param.parent.appendChild(tr);
 		var td = document.createElement('td');
+		tr.appendChild(td);
 			td.className = "question";
 			td.textContent = question;
-		tr.appendChild(td);
 
 		var td = document.createElement('td');
+		tr.appendChild(td);
 			var select = document.createElement('select');
+			td.appendChild(select);
 				var option = document.createElement('option');
+				select.appendChild(option);
 					option.setAttribute('value', -1);
-					option.textContent = _("(no opinion)");
+					option.textContent = _("(no opinion)", param.parent);
 					option.setAttribute('selected', true);
-				select.appendChild(option);
 
 				var option = document.createElement('option');
+				select.appendChild(option);
 					option.setAttribute('value', 0);
-					option.textContent = _("I do not agree at all");
-				select.appendChild(option);
+					option.textContent = _("I do not agree at all", param.parent);
 
-				var option = document.createElement('option');
+				var option = document.createElement('option', param.parent);
+				select.appendChild(option);
 					option.setAttribute('value', 1);
-					option.textContent = _("I disagree");
-				select.appendChild(option);
+					option.textContent = _("I disagree", param.parent);
 
-				var option = document.createElement('option');
+				var option = document.createElement('option', param.parent);
+				select.appendChild(option);
 					option.setAttribute('value', 2);
-					option.textContent = _("neither/nor");
-				select.appendChild(option);
+					option.textContent = _("neither/nor", param.parent);
 
-				var option = document.createElement('option');
+				var option = document.createElement('option', param.parent);
+				select.appendChild(option);
 					option.setAttribute('value', 3);
-					option.textContent = _("I agree");
-				select.appendChild(option);
+					option.textContent = _("I agree", param.parent);
 
 				var option = document.createElement('option');
-					option.setAttribute('value', 4);
-					option.textContent = _("I fully agree");
 				select.appendChild(option);
+					option.setAttribute('value', 4);
+					option.textContent = _("I fully agree", param.parent);
 
 				select.setAttribute('onchange', 'electomat_onchange(this)');
-			td.appendChild(select);
-		tr.appendChild(td);
 
 		foreach(param.partys, electomat_td, {'parent': tr, 'question': question});
-	param.parent.appendChild(tr);
 }
 
 function electomat_td(party, param) {
 	var td = document.createElement('td');
+	param.parent.appendChild(td);
 		if (party.answers.hasOwnProperty(param.question)) {
 			var answer = party.answers[param.question]
 			if (answer.hasOwnProperty('comment')) {
@@ -139,7 +181,6 @@ function electomat_td(party, param) {
 			}
 			td.setAttribute('data-value', answer.value);
 		}
-	param.parent.appendChild(td);
 }
 
 /*** onchange ***/
