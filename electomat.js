@@ -46,7 +46,7 @@ translations = {
 
 function _(s, env) {
 	while (!env.hasAttribute('lang')) {
-		if (!env.hasOwnProperty('parentElement')) {
+		if (!env.hasOwnProperty('parentElement') || !env.parentElement) {
 			return s;
 		}
 		env = env.parentElement;
