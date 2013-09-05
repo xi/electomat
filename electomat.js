@@ -199,7 +199,7 @@ function electomat_onchange(select) {
 function electomat_similarity(table) {
 	var rows = table.children[1].children;
 
-	var similarity = [];
+	var similarity = [null, null]; // first two entries must be empty
 	for (i_party=2; i_party<rows[0].children.length; i_party++) {
 		var s = 0;
 		var k = 0;
