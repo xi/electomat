@@ -144,13 +144,13 @@ function electomat_tr(question, param) {
 
 				var option = document.createElement('option');
 				select.appendChild(option);
-					option.setAttribute('value', 0);
-					option.textContent = _("I do not agree at all", param.parent);
+					option.setAttribute('value', 4);
+					option.textContent = _("I fully agree", param.parent);
 
 				var option = document.createElement('option', param.parent);
 				select.appendChild(option);
-					option.setAttribute('value', 1);
-					option.textContent = _("I disagree", param.parent);
+					option.setAttribute('value', 3);
+					option.textContent = _("I agree", param.parent);
 
 				var option = document.createElement('option', param.parent);
 				select.appendChild(option);
@@ -159,13 +159,13 @@ function electomat_tr(question, param) {
 
 				var option = document.createElement('option', param.parent);
 				select.appendChild(option);
-					option.setAttribute('value', 3);
-					option.textContent = _("I agree", param.parent);
+					option.setAttribute('value', 1);
+					option.textContent = _("I disagree", param.parent);
 
 				var option = document.createElement('option');
 				select.appendChild(option);
-					option.setAttribute('value', 4);
-					option.textContent = _("I fully agree", param.parent);
+					option.setAttribute('value', 0);
+					option.textContent = _("I do not agree at all", param.parent);
 
 				select.setAttribute('onchange', 'electomat_onchange(this)');
 
