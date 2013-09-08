@@ -35,7 +35,7 @@ function foreach(o, fn, param) {
 translations = {
 	'de': {
 		"(no opinion)": "(keine Meinung)",
-		"I do not agree at all": "stimme überhaupt nicht zu",
+		"I do not agree at all": "stimme \u00fcberhaupt nicht zu",
 		"I disagree": "stimme nicht zu",
 		"neither/nor": "weder/noch",
 		"I agree": "stimme zu",
