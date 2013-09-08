@@ -99,6 +99,7 @@ function electomat_table(o, data) {
 
 				var th = document.createElement('th')
 				tr.appendChild(th);
+					th.scope = "col";
 					th.textContent = _("your choice", table);
 
 				foreach(data.partys, electomat_th, {'parent': tr});
@@ -110,6 +111,7 @@ function electomat_table(o, data) {
 
 function electomat_th(party, param) {
 	var th = document.createElement('th');
+	th.scope = "col";
 	param.parent.appendChild(th);
 		var name = document.createElement('span');
 		th.appendChild(name);
@@ -124,10 +126,11 @@ function electomat_th(party, param) {
 function electomat_tr(question, param) {
 	var tr = document.createElement('tr');
 	param.parent.appendChild(tr);
-		var td = document.createElement('td');
-		tr.appendChild(td);
-			td.className = "question";
-			td.textContent = question;
+		var th = document.createElement('th');
+		tr.appendChild(th);
+			th.className = "question";
+			th.scope = "row";
+			th.textContent = question;
 
 		var td = document.createElement('td');
 		tr.appendChild(td);
