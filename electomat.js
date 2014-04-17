@@ -3,7 +3,7 @@
  *
  *  @author Tobias Bengfort <tobias.bengfort@gmx.net>
  *  @copyright Tobias Bengfort <tobias.bengfort@gmx.net>, 2013
- *  @license LGPL <http://www.gnu.org/licenses/agpl-3.0.html> 
+ *  @license LGPL <http://www.gnu.org/licenses/agpl-3.0.html>
  *
  *  # usage
  *
@@ -31,7 +31,7 @@ function foreach(o, fn, param) {
 	}
 }
 
-/*** l11n ***/
+/*** l10n ***/
 translations = {
 	'de': {
 		"(no opinion)": "(keine Meinung)",
