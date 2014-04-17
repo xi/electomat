@@ -31,18 +31,29 @@ function foreach(o, fn, param) {
 	}
 }
 
-function getJSON(url, fn) {
+function ajax(url, success, error) {
 	request = new XMLHttpRequest();
 	request.open('GET', url, true);
 
 	request.onload = function() {
 		if (request.status >= 200 && request.status < 400) {
-			// Success!
-			data = JSON.parse(request.responseText);
-			fn(data);
+			success(request);
+		} else if (error) {
+			error(request);
+		}
+	};
+	request.onerror = function() {
+		if (error) {
+			error(request);
 		}
 	};
 	request.send();
+}
+function getJSON(url, success, error) {
+	ajax(url, function(request) {
+		data = JSON.parse(request.responseText);
+		success(data, request);
+	}, error);
 }
 
 /*** l10n ***/
@@ -81,7 +92,7 @@ function _(s, env) {
 }
 
 /*** create table ***/
-function electomat_load(o, param) {
+function electomat_load(o) {
 	getJSON(o.getAttribute('src'), function(data) {
 		electomat_table(o, data);
 	});
