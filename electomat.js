@@ -2,7 +2,7 @@
  *  electomat - see who you should elect
  *
  *  @author Tobias Bengfort <tobias.bengfort@gmx.net>
- *  @copyright Tobias Bengfort <tobias.bengfort@gmx.net>, 2013
+ *  @copyright Tobias Bengfort <tobias.bengfort@gmx.net>, 2013-2014
  *  @license LGPL <http://www.gnu.org/licenses/agpl-3.0.html>
  *
  *  # usage
