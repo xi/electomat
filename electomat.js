@@ -256,7 +256,7 @@
 			}
 		}
 
-		quicksort(2, similarity.length-1);
+		quicksort(2, similarity.length - 1);
 	}
 
 	/*** main ***/
