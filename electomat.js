@@ -56,11 +56,11 @@ var electomat = (function() {
 	var translations = {
 		'de': {
 			"(no opinion)": "(keine Meinung)",
-			"I do not agree at all": "stimme \u00fcberhaupt nicht zu",
-			"I disagree": "stimme nicht zu",
+			"full disapproval": "Vollständige Ablehnung",
+			"disapproval": "Ablehung",
 			"neither/nor": "weder/noch",
-			"I agree": "stimme zu",
-			"I fully agree": "stimme komplett zu",
+			"approval": "Zustimmung",
+			"full approval": "volle Zustimmung",
 			"your choice": "deine Meinung"
 		}
 	}
@@ -139,18 +139,13 @@ var electomat = (function() {
 			var select = document.createElement('select');
 			td.appendChild(select);
 			select.innerHTML += '<option value="-1" selected>' + _("(no opinion)", param.parent) + '</option>';
-			select.innerHTML += '<option value="4">' + _("I fully agree", param.parent) + '</option>';
-			select.innerHTML += '<option value="3">' + _("I agree", param.parent) + '</option>';
-			select.innerHTML += '<option value="2">' + _("neither/nor", param.parent) + '</option>';
-			select.innerHTML += '<option value="1">' + _("I disagree", param.parent) + '</option>';
-			select.innerHTML += '<option value="0">' + _("I do not agree at all", param.parent) + '</option>';
+			select.innerHTML += '<option value="4">' + value2txt(4, param.parent) + '</option>';
+			select.innerHTML += '<option value="3">' + value2txt(3, param.parent) + '</option>';
+			select.innerHTML += '<option value="2">' + value2txt(2, param.parent) + '</option>';
+			select.innerHTML += '<option value="1">' + value2txt(1, param.parent) + '</option>';
+			select.innerHTML += '<option value="0">' + value2txt(0, param.parent) + '</option>';
 			select.addEventListener('change', function() {
-				var value = select.children[select.selectedIndex].value;
-				if (value in ["0", "1", "2", "3", "4"]) {
-					td.setAttribute('data-value', value);
-				} else {
-					td.removeAttribute('data-value');
-				}
+				setValue(td, select.children[select.selectedIndex].value);
 
 				var table = td.parentNode.parentNode.parentNode;
 				sort_cols(table);
@@ -164,13 +159,38 @@ var electomat = (function() {
 	function create_td(party, param) {
 		var td = document.createElement('td');
 		param.parent.appendChild(td);
-			if (party.answers.hasOwnProperty(param.question)) {
-				var answer = party.answers[param.question];
-				if (answer.hasOwnProperty('comment')) {
-					td.textContent = answer.comment;
-				}
-				td.setAttribute('data-value', answer.value);
+		if (party.answers.hasOwnProperty(param.question)) {
+			var answer = party.answers[param.question];
+			if (answer.hasOwnProperty('comment')) {
+				td.textContent = answer.comment;
 			}
+			setValue(td, answer.value);
+		}
+	}
+
+	function value2txt(value, ctx) {
+		if (value == 0) {
+			return _('full disapproval', ctx);
+		} else if (value == 1) {
+			return _('disapproval', ctx);
+		} else if (value == 2) {
+			return _('neither/nor', ctx);
+		} else if (value == 3) {
+			return _('approval', ctx);
+		} else if (value == 4) {
+			return _('full approval', ctx);
+		} else {
+			return _('(no opinion)', ctx);
+		}
+	}
+
+	function setValue(el, value) {
+		if (value in ["0", "1", "2", "3", "4"]) {
+			el.setAttribute('data-value', value);
+		} else {
+			el.removeAttribute('data-value');
+		}
+		el.setAttribute('title', value2txt(value, el));
 	}
 
 	function get_similarity(table) {
