@@ -90,13 +90,13 @@
 	}
 
 	/*** create table ***/
-	function electomat_load(el) {
+	function init(el) {
 		getJSON(el.getAttribute('src'), function(data) {
-			electomat_table(el, data);
+			create_table(el, data);
 		});
 	}
 
-	function electomat_table(el, data) {
+	function create_table(el, data) {
 		var table = document.createElement('table');
 		el.parentNode.replaceChild(table, el);
 			table.className = "electomat";
@@ -112,17 +112,17 @@
 			tr.innerHTML += '<th></th>';
 			tr.innerHTML += '<th scope="col">' + _("your choice", table); + '</th>'
 			forEach(data.partys, function(party) {
-				electomat_th(party, {'parent': tr});
+				create_th(party, {'parent': tr});
 			});
 
 			var tbody = document.createElement('tbody');
 			table.appendChild(tbody);
 				forEach(data.questions, function(question) {
-					electomat_tr(question, {'parent': tbody, 'partys': data.partys});
+					create_tr(question, {'parent': tbody, 'partys': data.partys});
 				});
 	}
 
-	function electomat_th(party, param) {
+	function create_th(party, param) {
 		var th = document.createElement('th');
 		th.scope = "col";
 		param.parent.appendChild(th);
@@ -130,7 +130,7 @@
 		th.innerHTML += '<span class="similarity"></span>';
 	}
 
-	function electomat_tr(question, param) {
+	function create_tr(question, param) {
 		var tr = document.createElement('tr');
 		param.parent.appendChild(tr);
 			tr.innerHTML += '<th class="question" scope="row">' + question + '</th>';
@@ -155,15 +155,15 @@
 				}
 
 				var table = td.parentNode.parentNode.parentNode;
-				electomat_sort(table);
+				sort_cols(table);
 			});
 
 			forEach(param.partys, function(party) {
-				electomat_td(party, {'parent': tr, 'question': question});
+				create_td(party, {'parent': tr, 'question': question});
 			});
 	}
 
-	function electomat_td(party, param) {
+	function create_td(party, param) {
 		var td = document.createElement('td');
 		param.parent.appendChild(td);
 			if (party.answers.hasOwnProperty(param.question)) {
@@ -175,7 +175,7 @@
 			}
 	}
 
-	function electomat_similarity(table) {
+	function get_similarity(table) {
 		var rows = table.children[1].children;
 
 		var similarity = [null, null]; // first two entries must be empty
@@ -204,8 +204,8 @@
 		return similarity;
 	}
 
-	function electomat_sort(table) {
-		var similarity = electomat_similarity(table);
+	function sort_cols(table) {
+		var similarity = get_similarity(table);
 		var head = table.children[0].children[0];
 		var rows = table.children[1].children;
 
@@ -261,6 +261,6 @@
 
 	/*** main ***/
 	document.addEventListener("DOMContentLoaded", function() {
-		forEach(document.getElementsByClassName('electomat'), electomat_load);
+		forEach(document.getElementsByClassName('electomat'), init);
 	});
 })();
