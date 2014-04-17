@@ -20,7 +20,7 @@
 
 "use strict";
 
-(function() {
+var electomat = (function() {
 	function forEach(items, fn) {
 		for (var i = 0; i < items.length; i++) {
 			fn(items[i], i);
@@ -88,7 +88,7 @@
 	}
 
 	/*** create table ***/
-	function init(el) {
+	function electomat(el) {
 		getJSON(el.getAttribute('src'), function(data) {
 			create_table(el, data);
 		});
@@ -259,6 +259,8 @@
 
 	/*** main ***/
 	document.addEventListener("DOMContentLoaded", function() {
-		forEach(document.getElementsByClassName('electomat'), init);
+		forEach(document.getElementsByClassName('electomat'), electomat);
 	});
+
+	return electomat;
 })();
