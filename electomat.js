@@ -261,9 +261,6 @@
 
 	/*** main ***/
 	document.addEventListener("DOMContentLoaded", function() {
-		var l = document.getElementsByClassName('electomat');
-		for (var i = 0; i < l.length; i++) {
-			electomat_load(l[i]);
-		}
+		forEach(document.getElementsByClassName('electomat'), electomat_load);
 	});
 })();
