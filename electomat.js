@@ -22,10 +22,8 @@
 
 (function() {
 	function forEach(items, fn) {
-		for (var key in items) {
-			if (items.hasOwnProperty(key)) {
-				fn(items[key], key);
-			}
+		for (var i = 0; i < items.length; i++) {
+			fn(items[i], i);
 		}
 	}
 
