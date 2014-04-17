@@ -20,11 +20,6 @@
 
 "use strict";
 
-/*** helper ***/
-window.onDOMReady = function(fn) {
-	document.addEventListener("DOMContentLoaded", fn, false);
-};
-
 function forEach(items, fn) {
 	for (var key in items) {
 		if (items.hasOwnProperty(key)) {
@@ -308,8 +303,8 @@ function electomat_sort(table) {
 }
 
 /*** main ***/
-window.onDOMReady(function() {
-	var l = document.getElementsByClassName('electomat')
+document.addEventListener("DOMContentLoaded", function() {
+	var l = document.getElementsByClassName('electomat');
 	for (var i=0; i<l.length; i++) {
 		electomat_load(l[i]);
 	}
