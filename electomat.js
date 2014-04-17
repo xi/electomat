@@ -31,6 +31,20 @@ function foreach(o, fn, param) {
 	}
 }
 
+function getJSON(url, fn) {
+	request = new XMLHttpRequest();
+	request.open('GET', url, true);
+
+	request.onload = function() {
+		if (request.status >= 200 && request.status < 400) {
+			// Success!
+			data = JSON.parse(request.responseText);
+			fn(data);
+		}
+	};
+	request.send();
+}
+
 /*** l10n ***/
 translations = {
 	'de': {
@@ -68,17 +82,9 @@ function _(s, env) {
 
 /*** create table ***/
 function electomat_load(o, param) {
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open('GET', o.getAttribute('src'), true);
-	xmlhttp.onreadystatechange = function() {
-		if(xmlhttp.readyState==4) {
-			if(xmlhttp.status==200) {
-				var data = JSON.parse(xmlhttp.responseText);
-				electomat_table(o, data);
-			}
-		}
-	};
-	xmlhttp.send(null);
+	getJSON(o.getAttribute('src'), function(data) {
+		electomat_table(o, data);
+	});
 }
 
 function electomat_table(o, data) {
