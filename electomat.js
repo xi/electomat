@@ -134,18 +134,28 @@ function electomat_tr(question, param) {
 	param.parent.appendChild(tr);
 		tr.innerHTML += '<th class="question" scope="row">' + question + '</th>';
 
+		var td = document.createElement('td');
+		tr.appendChild(td);
+
 		var select = document.createElement('select');
+		td.appendChild(select);
 		select.innerHTML += '<option value="-1" selected>' + _("(no opinion)", param.parent) + '</option>';
 		select.innerHTML += '<option value="4">' + _("I fully agree", param.parent) + '</option>';
 		select.innerHTML += '<option value="3">' + _("I agree", param.parent) + '</option>';
 		select.innerHTML += '<option value="2">' + _("neither/nor", param.parent) + '</option>';
 		select.innerHTML += '<option value="1">' + _("I disagree", param.parent) + '</option>';
 		select.innerHTML += '<option value="0">' + _("I do not agree at all", param.parent) + '</option>';
-		select.setAttribute('onchange', 'electomat_onchange(this)');
+		select.addEventListener('change', function() {
+			var value = select.children[select.selectedIndex].value;
+			if (value in ["0", "1", "2", "3", "4"]) {
+				td.setAttribute('data-value', value);
+			} else {
+				td.removeAttribute('data-value');
+			}
 
-		var td = document.createElement('td');
-		td.appendChild(select);
-		tr.appendChild(td);
+			var table = td.parentNode.parentNode.parentNode;
+			electomat_sort(table);
+		});
 
 		forEach(param.partys, function(party) {
 			electomat_td(party, {'parent': tr, 'question': question});
@@ -162,21 +172,6 @@ function electomat_td(party, param) {
 			}
 			td.setAttribute('data-value', answer.value);
 		}
-}
-
-/*** onchange ***/
-function electomat_onchange(select) {
-	var td = select.parentNode;
-	var value = select.children[select.selectedIndex].value;
-	if (value in ["0", "1", "2", "3", "4"]) {
-		td.setAttribute('data-value', value);
-	}
-	else {
-		td.removeAttribute('data-value');
-	}
-
-	var table = td.parentNode.parentNode.parentNode;
-	electomat_sort(table);
 }
 
 function electomat_similarity(table) {
