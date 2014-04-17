@@ -183,10 +183,10 @@ function electomat_similarity(table) {
 	var rows = table.children[1].children;
 
 	var similarity = [null, null]; // first two entries must be empty
-	for (var i_party=2; i_party<rows[0].children.length; i_party++) {
+	for (var i_party = 2; i_party < rows[0].children.length; i_party++) {
 		var s = 0;
 		var k = 0;
-		for (var i=0; i<rows.length; i++) {
+		for (var i = 0; i < rows.length; i++) {
 			var vs = [];
 			var td_user = rows[i].children[1];
 			var td_party = rows[i].children[i_party];
@@ -213,7 +213,7 @@ function electomat_sort(table) {
 	var head = table.children[0].children[0];
 	var rows = table.children[1].children;
 
-	for (var i=2; i<head.children.length; i++) {
+	for (var i = 2; i < head.children.length; i++) {
 		var o = head.children[i].getElementsByClassName('similarity');
 		if (o) {
 			o[0].textContent = ' (' + Math.round(similarity[i] * 100) + '%)';
@@ -223,15 +223,15 @@ function electomat_sort(table) {
 	function moveBefore(i, j) {
 		if (i == j || i == j-1) {return}
 
-		if (i<j) {
-			similarity = [].concat(similarity.slice(0,i), similarity.slice(i+1,j), similarity[i], similarity.slice(j));
+		if (i < j) {
+			similarity = [].concat(similarity.slice(0, i), similarity.slice(i + 1, j), similarity[i], similarity.slice(j));
 		}
 		else {
-			similarity = [].concat(similarity.slice(0,j), similarity[i], similarity.slice(j,i), similarity.slice(i+1));
+			similarity = [].concat(similarity.slice(0, j), similarity[i], similarity.slice(j, i), similarity.slice(i + 1));
 		}
 
 		head.insertBefore(head.children[i], head.children[j]);
-		for (var k=0; k<rows.length; k++) {
+		for (var k = 0; k < rows.length; k++) {
 			rows[k].insertBefore(rows[k].children[i], rows[k].children[j]);
 		}
 	}
@@ -240,22 +240,22 @@ function electomat_sort(table) {
 		if (left < right) {
 			var pivot = left;
 
-			for (var i=pivot+1; i<=right; i++) {
+			for (var i = pivot+1; i <= right; i++) {
 				if (similarity[i] > similarity[pivot]) {
 					moveBefore(i, pivot);
 					pivot++;
 				}
 			}
 
-			quicksort(left, pivot-1);
-			quicksort(pivot+1, right);
+			quicksort(left, pivot - 1);
+			quicksort(pivot + 1, right);
 		}
 	}
 
 	function insertionsort() {
-		for (var i=2; i<head.children.length; i++) {
-			for (var j=i-1; j>=2 && similarity[i] > similarity[j]; j--) {}
-			moveBefore(i, j+1);
+		for (var i = 2; i < head.children.length; i++) {
+			for (var j = i-1; j >= 2 && similarity[i] > similarity[j]; j--) {}
+			moveBefore(i, j + 1);
 		}
 	}
 
@@ -265,8 +265,7 @@ function electomat_sort(table) {
 /*** main ***/
 document.addEventListener("DOMContentLoaded", function() {
 	var l = document.getElementsByClassName('electomat');
-	for (var i=0; i<l.length; i++) {
+	for (var i = 0; i < l.length; i++) {
 		electomat_load(l[i]);
 	}
 });
-
