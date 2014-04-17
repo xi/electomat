@@ -18,13 +18,15 @@
  *  the json data. You may solve this server-side.
  */
 
+"use strict";
+
 /*** helper ***/
 window.onDOMReady = function(fn) {
 	document.addEventListener("DOMContentLoaded", fn, false);
 };
 
 function forEach(items, fn) {
-	for (key in items) {
+	for (var key in items) {
 		if (items.hasOwnProperty(key)) {
 			fn(items[key], key);
 		}
@@ -32,7 +34,7 @@ function forEach(items, fn) {
 }
 
 function ajax(url, success, error) {
-	request = new XMLHttpRequest();
+	var request = new XMLHttpRequest();
 	request.open('GET', url, true);
 
 	request.onload = function() {
@@ -51,13 +53,13 @@ function ajax(url, success, error) {
 }
 function getJSON(url, success, error) {
 	ajax(url, function(request) {
-		data = JSON.parse(request.responseText);
+		var data = JSON.parse(request.responseText);
 		success(data, request);
 	}, error);
 }
 
 /*** l10n ***/
-translations = {
+var translations = {
 	'de': {
 		"(no opinion)": "(keine Meinung)",
 		"I do not agree at all": "stimme \u00fcberhaupt nicht zu",
@@ -74,7 +76,7 @@ function _(s, env) {
 		env = env.parentNode;
 		if (env === document) {return s}
 	}
-	lang = env.getAttribute('lang');
+	var lang = env.getAttribute('lang');
 
 	if (translations.hasOwnProperty(lang)) {
 		if (translations[lang].hasOwnProperty(s)) {
@@ -210,7 +212,7 @@ function electomat_td(party, param) {
 /*** onchange ***/
 function electomat_onchange(select) {
 	var td = select.parentNode;
-	value = select.children[select.selectedIndex].value;
+	var value = select.children[select.selectedIndex].value;
 	if (value in ["0", "1", "2", "3", "4"]) {
 		td.setAttribute('data-value', value);
 	}
@@ -226,10 +228,10 @@ function electomat_similarity(table) {
 	var rows = table.children[1].children;
 
 	var similarity = [null, null]; // first two entries must be empty
-	for (i_party=2; i_party<rows[0].children.length; i_party++) {
+	for (var i_party=2; i_party<rows[0].children.length; i_party++) {
 		var s = 0;
 		var k = 0;
-		for (i=0; i<rows.length; i++) {
+		for (var i=0; i<rows.length; i++) {
 			var vs = [];
 			var td_user = rows[i].children[1];
 			var td_party = rows[i].children[i_party];
@@ -256,7 +258,7 @@ function electomat_sort(table) {
 	var head = table.children[0].children[0];
 	var rows = table.children[1].children;
 
-	for (i=2; i<head.children.length; i++) {
+	for (var i=2; i<head.children.length; i++) {
 		var o = head.children[i].getElementsByClassName('similarity')
 		if (o) {
 			o[0].textContent = ' (' + Math.round(similarity[i] * 100) + '%)';
@@ -274,16 +276,16 @@ function electomat_sort(table) {
 		}
 
 		head.insertBefore(head.children[i], head.children[j]);
-		for (k=0; k<rows.length; k++) {
+		for (var k=0; k<rows.length; k++) {
 			rows[k].insertBefore(rows[k].children[i], rows[k].children[j]);
 		}
 	}
 
 	function quicksort(left, right) {
 		if (left < right) {
-			pivot = left;
+			var pivot = left;
 
-			for (i=pivot+1; i<=right; i++) {
+			for (var i=pivot+1; i<=right; i++) {
 				if (similarity[i] > similarity[pivot]) {
 					moveBefore(i, pivot);
 					pivot++;
@@ -296,8 +298,8 @@ function electomat_sort(table) {
 	}
 
 	function insertionsort() {
-		for (i=2; i<head.children.length; i++) {
-			for (j=i-1; j>=2 && similarity[i] > similarity[j]; j--) {}
+		for (var i=2; i<head.children.length; i++) {
+			for (var j=i-1; j>=2 && similarity[i] > similarity[j]; j--) {}
 			moveBefore(i, j+1);
 		}
 	}
@@ -307,8 +309,8 @@ function electomat_sort(table) {
 
 /*** main ***/
 window.onDOMReady(function() {
-	l = document.getElementsByClassName('electomat')
-	for (i=0; i<l.length; i++) {
+	var l = document.getElementsByClassName('electomat')
+	for (var i=0; i<l.length; i++) {
 		electomat_load(l[i]);
 	}
 });
