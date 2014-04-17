@@ -165,17 +165,17 @@ function electomat_tr(question, param) {
 					option.setAttribute('value', 4);
 					option.textContent = _("I fully agree", param.parent);
 
-				var option = document.createElement('option', param.parent);
+				var option = document.createElement('option');
 				select.appendChild(option);
 					option.setAttribute('value', 3);
 					option.textContent = _("I agree", param.parent);
 
-				var option = document.createElement('option', param.parent);
+				var option = document.createElement('option');
 				select.appendChild(option);
 					option.setAttribute('value', 2);
 					option.textContent = _("neither/nor", param.parent);
 
-				var option = document.createElement('option', param.parent);
+				var option = document.createElement('option');
 				select.appendChild(option);
 					option.setAttribute('value', 1);
 					option.textContent = _("I disagree", param.parent);
@@ -309,3 +309,4 @@ document.addEventListener("DOMContentLoaded", function() {
 		electomat_load(l[i]);
 	}
 });
+
