@@ -89,18 +89,18 @@ function _(s, env) {
 }
 
 /*** create table ***/
-function electomat_load(o) {
-	getJSON(o.getAttribute('src'), function(data) {
-		electomat_table(o, data);
+function electomat_load(el) {
+	getJSON(el.getAttribute('src'), function(data) {
+		electomat_table(el, data);
 	});
 }
 
-function electomat_table(o, data) {
+function electomat_table(el, data) {
 	var table = document.createElement('table');
-	o.parentNode.replaceChild(table, o);
+	el.parentNode.replaceChild(table, el);
 		table.className = "electomat";
-		if (o.hasAttribute('lang')) {
-			table.setAttribute('lang', o.getAttribute('lang'));
+		if (el.hasAttribute('lang')) {
+			table.setAttribute('lang', el.getAttribute('lang'));
 		}
 
 		var thead = document.createElement('thead');
@@ -214,9 +214,9 @@ function electomat_sort(table) {
 	var rows = table.children[1].children;
 
 	for (var i = 2; i < head.children.length; i++) {
-		var o = head.children[i].getElementsByClassName('similarity');
-		if (o) {
-			o[0].textContent = ' (' + Math.round(similarity[i] * 100) + '%)';
+		var el = head.children[i].getElementsByClassName('similarity');
+		if (el) {
+			el[0].textContent = ' (' + Math.round(similarity[i] * 100) + '%)';
 		}
 	}
 
