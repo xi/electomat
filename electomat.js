@@ -79,7 +79,7 @@ function _(s, env) {
 		}
 	}
 	// try again with tag only, e.g. 'en' instead of 'en-US'
-	lang = lang.split('-')[0]
+	lang = lang.split('-')[0];
 	if (translations.hasOwnProperty(lang)) {
 		if (translations[lang].hasOwnProperty(s)) {
 			return translations[lang][s];
@@ -101,7 +101,7 @@ function electomat_table(o, data) {
 	o.parentNode.removeChild(o);
 		table.className = "electomat";
 		if (o.hasAttribute('lang')) {
-			table.setAttribute('lang', o.getAttribute('lang'))
+			table.setAttribute('lang', o.getAttribute('lang'));
 		}
 
 		var thead = document.createElement('thead');
@@ -111,7 +111,7 @@ function electomat_table(o, data) {
 				var th = document.createElement('th');
 				tr.appendChild(th);
 
-				var th = document.createElement('th')
+				var th = document.createElement('th');
 				tr.appendChild(th);
 					th.scope = "col";
 					th.textContent = _("your choice", table);
@@ -196,7 +196,7 @@ function electomat_td(party, param) {
 	var td = document.createElement('td');
 	param.parent.appendChild(td);
 		if (party.answers.hasOwnProperty(param.question)) {
-			var answer = party.answers[param.question]
+			var answer = party.answers[param.question];
 			if (answer.hasOwnProperty('comment')) {
 				td.textContent = answer.comment;
 			}
@@ -254,7 +254,7 @@ function electomat_sort(table) {
 	var rows = table.children[1].children;
 
 	for (var i=2; i<head.children.length; i++) {
-		var o = head.children[i].getElementsByClassName('similarity')
+		var o = head.children[i].getElementsByClassName('similarity');
 		if (o) {
 			o[0].textContent = ' (' + Math.round(similarity[i] * 100) + '%)';
 		}
@@ -264,10 +264,10 @@ function electomat_sort(table) {
 		if (i == j || i == j-1) {return}
 
 		if (i<j) {
-			similarity = [].concat(similarity.slice(0,i), similarity.slice(i+1,j), similarity[i], similarity.slice(j))
+			similarity = [].concat(similarity.slice(0,i), similarity.slice(i+1,j), similarity[i], similarity.slice(j));
 		}
 		else {
-			similarity = [].concat(similarity.slice(0,j), similarity[i], similarity.slice(j,i), similarity.slice(i+1))
+			similarity = [].concat(similarity.slice(0,j), similarity[i], similarity.slice(j,i), similarity.slice(i+1));
 		}
 
 		head.insertBefore(head.children[i], head.children[j]);
