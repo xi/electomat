@@ -23,10 +23,10 @@ window.onDOMReady = function(fn) {
 	document.addEventListener("DOMContentLoaded", fn, false);
 };
 
-function foreach(o, fn, param) {
-	for (key in o) {
-		if (o.hasOwnProperty(key)) {
-			fn(o[key], param);
+function forEach(items, fn) {
+	for (key in items) {
+		if (items.hasOwnProperty(key)) {
+			fn(items[key], key);
 		}
 	}
 }
@@ -119,11 +119,15 @@ function electomat_table(o, data) {
 					th.scope = "col";
 					th.textContent = _("your choice", table);
 
-				foreach(data.partys, electomat_th, {'parent': tr});
+				forEach(data.partys, function(party) {
+					electomat_th(party, {'parent': tr});
+				});
 
 		var tbody = document.createElement('tbody');
 		table.appendChild(tbody);
-			foreach(data.questions, electomat_tr, {'parent': tbody, 'partys': data.partys});
+			forEach(data.questions, function(question) {
+				electomat_tr(question, {'parent': tbody, 'partys': data.partys});
+			});
 }
 
 function electomat_th(party, param) {
@@ -186,7 +190,9 @@ function electomat_tr(question, param) {
 
 				select.setAttribute('onchange', 'electomat_onchange(this)');
 
-		foreach(param.partys, electomat_td, {'parent': tr, 'question': question});
+		forEach(param.partys, function(party) {
+			electomat_td(party, {'parent': tr, 'question': question});
+		});
 }
 
 function electomat_td(party, param) {
