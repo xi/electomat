@@ -97,8 +97,7 @@ function electomat_load(o) {
 
 function electomat_table(o, data) {
 	var table = document.createElement('table');
-	o.parentNode.insertBefore(table, o);
-	o.parentNode.removeChild(o);
+	o.parentNode.replaceChild(table, o);
 		table.className = "electomat";
 		if (o.hasAttribute('lang')) {
 			table.setAttribute('lang', o.getAttribute('lang'));
@@ -106,19 +105,14 @@ function electomat_table(o, data) {
 
 		var thead = document.createElement('thead');
 		table.appendChild(thead);
-			var tr = document.createElement('tr');
-			thead.appendChild(tr);
-				var th = document.createElement('th');
-				tr.appendChild(th);
+		var tr = document.createElement('tr');
+		thead.appendChild(tr);
 
-				var th = document.createElement('th');
-				tr.appendChild(th);
-					th.scope = "col";
-					th.textContent = _("your choice", table);
-
-				forEach(data.partys, function(party) {
-					electomat_th(party, {'parent': tr});
-				});
+		tr.innerHTML += '<th></th>';
+		tr.innerHTML += '<th scope="col">' + _("your choice", table); + '</th>'
+		forEach(data.partys, function(party) {
+			electomat_th(party, {'parent': tr});
+		});
 
 		var tbody = document.createElement('tbody');
 		table.appendChild(tbody);
@@ -131,61 +125,27 @@ function electomat_th(party, param) {
 	var th = document.createElement('th');
 	th.scope = "col";
 	param.parent.appendChild(th);
-		var name = document.createElement('span');
-		th.appendChild(name);
-		name.className = 'name';
-		name.textContent = party.name;
-
-		var similarity = document.createElement('span');
-		th.appendChild(similarity);
-		similarity.className = 'similarity';
+	th.innerHTML += '<span class="name">' + party.name + '</span>';
+	th.innerHTML += '<span class="similarity"></span>';
 }
 
 function electomat_tr(question, param) {
 	var tr = document.createElement('tr');
 	param.parent.appendChild(tr);
-		var th = document.createElement('th');
-		tr.appendChild(th);
-			th.className = "question";
-			th.scope = "row";
-			th.textContent = question;
+		tr.innerHTML += '<th class="question" scope="row">' + question + '</th>';
+
+		var select = document.createElement('select');
+		select.innerHTML += '<option value="-1" selected>' + _("(no opinion)", param.parent) + '</option>';
+		select.innerHTML += '<option value="4">' + _("I fully agree", param.parent) + '</option>';
+		select.innerHTML += '<option value="3">' + _("I agree", param.parent) + '</option>';
+		select.innerHTML += '<option value="2">' + _("neither/nor", param.parent) + '</option>';
+		select.innerHTML += '<option value="1">' + _("I disagree", param.parent) + '</option>';
+		select.innerHTML += '<option value="0">' + _("I do not agree at all", param.parent) + '</option>';
+		select.setAttribute('onchange', 'electomat_onchange(this)');
 
 		var td = document.createElement('td');
+		td.appendChild(select);
 		tr.appendChild(td);
-			var select = document.createElement('select');
-			td.appendChild(select);
-				var option = document.createElement('option');
-				select.appendChild(option);
-					option.setAttribute('value', -1);
-					option.textContent = _("(no opinion)", param.parent);
-					option.setAttribute('selected', true);
-
-				var option = document.createElement('option');
-				select.appendChild(option);
-					option.setAttribute('value', 4);
-					option.textContent = _("I fully agree", param.parent);
-
-				var option = document.createElement('option');
-				select.appendChild(option);
-					option.setAttribute('value', 3);
-					option.textContent = _("I agree", param.parent);
-
-				var option = document.createElement('option');
-				select.appendChild(option);
-					option.setAttribute('value', 2);
-					option.textContent = _("neither/nor", param.parent);
-
-				var option = document.createElement('option');
-				select.appendChild(option);
-					option.setAttribute('value', 1);
-					option.textContent = _("I disagree", param.parent);
-
-				var option = document.createElement('option');
-				select.appendChild(option);
-					option.setAttribute('value', 0);
-					option.textContent = _("I do not agree at all", param.parent);
-
-				select.setAttribute('onchange', 'electomat_onchange(this)');
 
 		forEach(param.partys, function(party) {
 			electomat_td(party, {'parent': tr, 'question': question});
