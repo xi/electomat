@@ -205,31 +205,42 @@ var electomat = (function() {
 		el.setAttribute('title', value2txt(value, el));
 	}
 
-	function get_similarities(table) {
+	function getValue(table, row_i, col_i) {
+		var row = table.children[1].children[row_i];
+		var td = row.children[col_i];
+		if (td.hasAttribute('data-value')) {
+			return parseInt(td.getAttribute('data-value'), 10);
+		}
+	}
+
+	function get_similarity(table, i_party) {
 		var rows = table.children[1].children;
 
-		var similarities = [null, null]; // first two entries must be empty
-		for (var i_party = 2; i_party < rows[0].children.length; i_party++) {
-			var s = 0;
-			var k = 0;
-			for (var i = 0; i < rows.length; i++) {
-				var vs = [];
-				var td_user = rows[i].children[1];
-				var td_party = rows[i].children[i_party];
+		var s = 0;
+		var k = 0;
 
-				if (td_user.hasAttribute('data-value')) {
-					if (td_party.hasAttribute('data-value')) {
-						var v_user = parseInt(td_user.getAttribute('data-value'), 10);
-						var v_party = parseInt(td_party.getAttribute('data-value'), 10);
-						s += (v_user - v_party) * (v_user - v_party) / 16;
-					}
-					else {
-						s += 1/4;
-					}
-					k++;
+		for (var i = 0; i < rows.length; i++) {
+			var v_user = getValue(table, i, 1);
+			var v_party = getValue(table, i, i_party);
+
+			if (typeof v_user !== "undefined") {
+				if (typeof v_party !== "undefined") {
+					s += Math.pow(v_user - v_party, 2) / 16;
+				} else {
+					s += 1/4;
 				}
+				k++;
 			}
-			similarities[i_party] = 1 - s/k;
+		}
+		return 1 - s/k;
+	}
+
+	function get_similarities(table) {
+		var n = table.children[0].children[0].children.length;
+
+		var similarities = [null, null]; // skip question and user cols
+		for (var i = 2; i < n; i++) {
+			similarities.push(get_similarity(table, i));
 		}
 		return similarities;
 	}
