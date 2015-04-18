@@ -2,20 +2,20 @@
  *  electomat - see who you should elect
  *
  *  @author Tobias Bengfort <tobias.bengfort@gmx.net>
- *  @copyright Tobias Bengfort <tobias.bengfort@gmx.net>, 2013-2014
+ *  @copyright Tobias Bengfort <tobias.bengfort@gmx.net>, 2013-2013
  *  @license LGPL <http://www.gnu.org/licenses/agpl-3.0.html>
  *
  *  # usage
  *
- *  Create a json file with your data. See example.json .
- *  In your html, include electomat.js and electomat.css
- *  and create a html element like this:
+ *  Create a JSON file with your data. See `example.json`.
+ *  In your html, include `electomat.js` and `electomat.css`
+ *  and create a HTML element like this:
  *
  *      <div class="electomat" src="example.json" lang="de"/>
  *
  *  Currently only english and german language are available.
  *  Please note that only the controls are translated, not
- *  the json data. You may solve this server-side.
+ *  the JSON data. You may solve this server-side.
  */
 
 var electomat = (function() {
