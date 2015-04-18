@@ -205,10 +205,10 @@ var electomat = (function() {
 		el.setAttribute('title', value2txt(value, el));
 	}
 
-	function get_similarity(table) {
+	function get_similarities(table) {
 		var rows = table.children[1].children;
 
-		var similarity = [null, null]; // first two entries must be empty
+		var similarities = [null, null]; // first two entries must be empty
 		for (var i_party = 2; i_party < rows[0].children.length; i_party++) {
 			var s = 0;
 			var k = 0;
@@ -229,20 +229,20 @@ var electomat = (function() {
 					k++;
 				}
 			}
-			similarity[i_party] = 1 - s/k;
+			similarities[i_party] = 1 - s/k;
 		}
-		return similarity;
+		return similarities;
 	}
 
 	function sort_cols(table) {
-		var similarity = get_similarity(table);
+		var similarities = get_similarities(table);
 		var head = table.children[0].children[0];
 		var rows = table.children[1].children;
 
 		for (var i = 2; i < head.children.length; i++) {
 			var el = head.children[i].getElementsByClassName('similarity');
 			if (el) {
-				el[0].textContent = ' (' + Math.round(similarity[i] * 100) + '%)';
+				el[0].textContent = ' (' + Math.round(similarities[i] * 100) + '%)';
 			}
 		}
 
@@ -250,10 +250,10 @@ var electomat = (function() {
 			if (i == j || i == j-1) {return}
 
 			if (i < j) {
-				similarity = [].concat(similarity.slice(0, i), similarity.slice(i + 1, j), similarity[i], similarity.slice(j));
+				similarities = [].concat(similarities.slice(0, i), similarities.slice(i + 1, j), similarities[i], similarities.slice(j));
 			}
 			else {
-				similarity = [].concat(similarity.slice(0, j), similarity[i], similarity.slice(j, i), similarity.slice(i + 1));
+				similarities = [].concat(similarities.slice(0, j), similarities[i], similarities.slice(j, i), similarities.slice(i + 1));
 			}
 
 			head.insertBefore(head.children[i], head.children[j]);
@@ -267,7 +267,7 @@ var electomat = (function() {
 				var pivot = left;
 
 				for (var i = pivot+1; i <= right; i++) {
-					if (similarity[i] > similarity[pivot]) {
+					if (similarities[i] > similarities[pivot]) {
 						moveBefore(i, pivot);
 						pivot++;
 					}
@@ -281,12 +281,12 @@ var electomat = (function() {
 		// alternative implementation
 		function insertionsort() {
 			for (var i = 2; i < head.children.length; i++) {
-				for (var j = i-1; j >= 2 && similarity[i] > similarity[j]; j--) {}
+				for (var j = i-1; j >= 2 && similarities[i] > similarities[j]; j--) {}
 				moveBefore(i, j + 1);
 			}
 		}
 
-		quicksort(2, similarity.length - 1);
+		quicksort(2, similarities.length - 1);
 	}
 
 	/*** main ***/
