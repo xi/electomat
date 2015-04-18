@@ -102,11 +102,11 @@ var electomat = (function() {
 	/*** create table ***/
 	var electomat = function(el) {
 		getJSON(el.getAttribute('src'), function(data) {
-			create_table(el, data);
+			createTable(el, data);
 		});
 	}
 
-	var create_table = function(el, data) {
+	var createTable = function(el, data) {
 		var table = document.createElement('table');
 		el.parentNode.replaceChild(table, el);
 			table.className = "electomat";
@@ -122,17 +122,17 @@ var electomat = (function() {
 			tr.innerHTML += '<th></th>';
 			tr.innerHTML += '<th scope="col">' + _("your choice", table); + '</th>'
 			forEach(data.partys, function(party) {
-				create_th(party, {'parent': tr});
+				createTh(party, {'parent': tr});
 			});
 
 			var tbody = document.createElement('tbody');
 			table.appendChild(tbody);
 				forEach(data.questions, function(question) {
-					create_tr(question, {'parent': tbody, 'partys': data.partys});
+					createTr(question, {'parent': tbody, 'partys': data.partys});
 				});
 	}
 
-	var create_th = function(party, param) {
+	var createTh = function(party, param) {
 		var th = document.createElement('th');
 		th.scope = "col";
 		param.parent.appendChild(th);
@@ -140,7 +140,7 @@ var electomat = (function() {
 		th.innerHTML += '<span class="similarity"></span>';
 	}
 
-	var create_tr = function(question, param) {
+	var createTr = function(question, param) {
 		var tr = document.createElement('tr');
 		param.parent.appendChild(tr);
 			tr.innerHTML += '<th class="question" scope="row">' + question + '</th>';
@@ -160,15 +160,15 @@ var electomat = (function() {
 				setValue(td, select.children[select.selectedIndex].value);
 
 				var table = td.parentNode.parentNode.parentNode;
-				sort_cols(table);
+				sortCols(table);
 			});
 
 			forEach(param.partys, function(party) {
-				create_td(party, {'parent': tr, 'question': question});
+				createTd(party, {'parent': tr, 'question': question});
 			});
 	}
 
-	var create_td = function(party, param) {
+	var createTd = function(party, param) {
 		var td = document.createElement('td');
 		param.parent.appendChild(td);
 		if (party.answers.hasOwnProperty(param.question)) {
@@ -205,27 +205,27 @@ var electomat = (function() {
 		el.setAttribute('title', value2txt(value, el));
 	}
 
-	var getValue = function(table, row_i, col_i) {
-		var row = table.children[1].children[row_i];
-		var td = row.children[col_i];
+	var getValue = function(table, rowI, colI) {
+		var row = table.children[1].children[rowI];
+		var td = row.children[colI];
 		if (td.hasAttribute('data-value')) {
 			return parseInt(td.getAttribute('data-value'), 10);
 		}
 	}
 
-	var get_similarity = function(table, i_party) {
+	var getSimilarity = function(table, partyI) {
 		var rows = table.children[1].children;
 
 		var s = 0;
 		var k = 0;
 
 		for (var i = 0; i < rows.length; i++) {
-			var v_user = getValue(table, i, 1);
-			var v_party = getValue(table, i, i_party);
+			var userV = getValue(table, i, 1);
+			var partyV = getValue(table, i, partyI);
 
-			if (typeof v_user !== "undefined") {
-				if (typeof v_party !== "undefined") {
-					s += Math.pow(v_user - v_party, 2) / 16;
+			if (typeof userV !== "undefined") {
+				if (typeof partyV !== "undefined") {
+					s += Math.pow(userV - partyV, 2) / 16;
 				} else {
 					s += 1/4;
 				}
@@ -235,18 +235,18 @@ var electomat = (function() {
 		return 1 - s/k;
 	}
 
-	var get_similarities = function(table) {
+	var getSimilarities = function(table) {
 		var n = table.children[0].children[0].children.length;
 
 		var similarities = [null, null]; // skip question and user cols
 		for (var i = 2; i < n; i++) {
-			similarities.push(get_similarity(table, i));
+			similarities.push(getSimilarity(table, i));
 		}
 		return similarities;
 	}
 
-	var sort_cols = function(table) {
-		var similarities = get_similarities(table);
+	var sortCols = function(table) {
+		var similarities = getSimilarities(table);
 		var head = table.children[0].children[0];
 		var rows = table.children[1].children;
 
