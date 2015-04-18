@@ -21,13 +21,13 @@
 var electomat = (function() {
 	"use strict";
 
-	function forEach(items, fn) {
+	var forEach = function(items, fn) {
 		for (var i = 0; i < items.length; i++) {
 			fn(items[i], i);
 		}
 	}
 
-	function ajax(url, success, error) {
+	var ajax = function(url, success, error) {
 		var request = new XMLHttpRequest();
 		request.open('GET', url, true);
 
@@ -45,7 +45,7 @@ var electomat = (function() {
 		};
 		request.send();
 	}
-	function getJSON(url, success, error) {
+	var getJSON = function(url, success, error) {
 		ajax(url, function(request) {
 			var data = JSON.parse(request.responseText);
 			success(data, request);
@@ -65,7 +65,7 @@ var electomat = (function() {
 		}
 	}
 
-	function getEnvLang(env) {
+	var getEnvLang = function(env) {
 		while (!env.hasAttribute('lang')) {
 			if (env === document) {
 				return null;
@@ -76,7 +76,7 @@ var electomat = (function() {
 		return env.getAttribute('lang');
 	}
 
-	function _(s, env) {
+	var _ = function(s, env) {
 		var lang = getEnvLang(env);
 
 		if (!lang) {
@@ -100,13 +100,13 @@ var electomat = (function() {
 	}
 
 	/*** create table ***/
-	function electomat(el) {
+	var electomat = function(el) {
 		getJSON(el.getAttribute('src'), function(data) {
 			create_table(el, data);
 		});
 	}
 
-	function create_table(el, data) {
+	var create_table = function(el, data) {
 		var table = document.createElement('table');
 		el.parentNode.replaceChild(table, el);
 			table.className = "electomat";
@@ -132,7 +132,7 @@ var electomat = (function() {
 				});
 	}
 
-	function create_th(party, param) {
+	var create_th = function(party, param) {
 		var th = document.createElement('th');
 		th.scope = "col";
 		param.parent.appendChild(th);
@@ -140,7 +140,7 @@ var electomat = (function() {
 		th.innerHTML += '<span class="similarity"></span>';
 	}
 
-	function create_tr(question, param) {
+	var create_tr = function(question, param) {
 		var tr = document.createElement('tr');
 		param.parent.appendChild(tr);
 			tr.innerHTML += '<th class="question" scope="row">' + question + '</th>';
@@ -168,7 +168,7 @@ var electomat = (function() {
 			});
 	}
 
-	function create_td(party, param) {
+	var create_td = function(party, param) {
 		var td = document.createElement('td');
 		param.parent.appendChild(td);
 		if (party.answers.hasOwnProperty(param.question)) {
@@ -180,7 +180,7 @@ var electomat = (function() {
 		}
 	}
 
-	function value2txt(value, ctx) {
+	var value2txt = function(value, ctx) {
 		if (value == 0) {
 			return _('full disapproval', ctx);
 		} else if (value == 1) {
@@ -196,7 +196,7 @@ var electomat = (function() {
 		}
 	}
 
-	function setValue(el, value) {
+	var setValue = function(el, value) {
 		if (value in ["0", "1", "2", "3", "4"]) {
 			el.setAttribute('data-value', value);
 		} else {
@@ -205,7 +205,7 @@ var electomat = (function() {
 		el.setAttribute('title', value2txt(value, el));
 	}
 
-	function getValue(table, row_i, col_i) {
+	var getValue = function(table, row_i, col_i) {
 		var row = table.children[1].children[row_i];
 		var td = row.children[col_i];
 		if (td.hasAttribute('data-value')) {
@@ -213,7 +213,7 @@ var electomat = (function() {
 		}
 	}
 
-	function get_similarity(table, i_party) {
+	var get_similarity = function(table, i_party) {
 		var rows = table.children[1].children;
 
 		var s = 0;
@@ -235,7 +235,7 @@ var electomat = (function() {
 		return 1 - s/k;
 	}
 
-	function get_similarities(table) {
+	var get_similarities = function(table) {
 		var n = table.children[0].children[0].children.length;
 
 		var similarities = [null, null]; // skip question and user cols
@@ -245,7 +245,7 @@ var electomat = (function() {
 		return similarities;
 	}
 
-	function sort_cols(table) {
+	var sort_cols = function(table) {
 		var similarities = get_similarities(table);
 		var head = table.children[0].children[0];
 		var rows = table.children[1].children;
@@ -257,7 +257,7 @@ var electomat = (function() {
 			}
 		}
 
-		function moveBefore(i, j) {
+		var moveBefore = function(i, j) {
 			if (i == j || i == j-1) {return}
 
 			if (i < j) {
@@ -273,7 +273,7 @@ var electomat = (function() {
 			}
 		}
 
-		function quicksort(left, right) {
+		var quicksort = function(left, right) {
 			if (left < right) {
 				var pivot = left;
 
@@ -290,7 +290,7 @@ var electomat = (function() {
 		}
 
 		// alternative implementation
-		function insertionsort() {
+		var insertionsort = function() {
 			for (var i = 2; i < head.children.length; i++) {
 				for (var j = i-1; j >= 2 && similarities[i] > similarities[j]; j--) {}
 				moveBefore(i, j + 1);
