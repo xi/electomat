@@ -45,6 +45,7 @@ var electomat = (function() {
 		};
 		request.send();
 	}
+
 	var getJSON = function(url, success, error) {
 		ajax(url, function(request) {
 			var data = JSON.parse(request.responseText);
@@ -100,7 +101,7 @@ var electomat = (function() {
 	}
 
 	/*** create table ***/
-	var electomat = function(el) {
+	var init = function(el) {
 		getJSON(el.getAttribute('src'), function(data) {
 			createTable(el, data);
 		});
@@ -302,8 +303,8 @@ var electomat = (function() {
 
 	/*** main ***/
 	document.addEventListener("DOMContentLoaded", function() {
-		forEach(document.getElementsByClassName('electomat'), electomat);
+		forEach(document.getElementsByClassName('electomat'), init);
 	});
 
-	return electomat;
+	return init;
 })();
