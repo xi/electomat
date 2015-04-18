@@ -18,9 +18,9 @@
  *  the json data. You may solve this server-side.
  */
 
-"use strict";
-
 var electomat = (function() {
+	"use strict";
+
 	function forEach(items, fn) {
 		for (var i = 0; i < items.length; i++) {
 			fn(items[i], i);
