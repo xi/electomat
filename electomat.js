@@ -65,18 +65,30 @@ var electomat = (function() {
 		}
 	}
 
-	function _(s, env) {
+	function getEnvLang(env) {
 		while (!env.hasAttribute('lang')) {
-			env = env.parentNode;
-			if (env === document) {return s}
+			if (env === document) {
+				return null;
+			} else {
+				env = env.parentNode;
+			}
 		}
-		var lang = env.getAttribute('lang');
+		return env.getAttribute('lang');
+	}
+
+	function _(s, env) {
+		var lang = getEnvLang(env);
+
+		if (!lang) {
+			return s;
+		}
 
 		if (translations.hasOwnProperty(lang)) {
 			if (translations[lang].hasOwnProperty(s)) {
 				return translations[lang][s];
 			}
 		}
+
 		// try again with tag only, e.g. 'en' instead of 'en-US'
 		lang = lang.split('-')[0];
 		if (translations.hasOwnProperty(lang)) {
