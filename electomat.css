@@ -5,7 +5,7 @@ table.electomat {
 table.electomat td {padding: 0.5em}
 table.electomat thead {border-bottom: 1px solid}
 table.electomat td:nth-of-type(1), table.electomat th:nth-of-type(1) {border-right: 1px solid}
-table.electomat tbody tr:nth-of-type(even) {background: #eee} 
+table.electomat tbody tr:nth-of-type(even) {background: #eee}
 table.electomat td[data-value="0"] {background: hsla(0,100%,52%,0.5)}
 table.electomat td[data-value="1"] {background: hsla(24,100%,56%,0.5)}
 table.electomat td[data-value="2"] {background: hsla(60,100%,60%,0.5)}
