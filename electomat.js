@@ -130,7 +130,7 @@ var electomat = (function() {
 			'</table>');
 
 		var value2txt = function(value) {
-			if (value == 0) {
+			if (value === 0) {
 				return _('full disapproval', element);
 			} else if (value == 1) {
 				return _('disapproval', element);
@@ -205,7 +205,9 @@ var electomat = (function() {
 			}
 
 			var moveBefore = function(i, j) {
-				if (i == j || i == j-1) {return}
+				if (i == j || i == j-1) {
+					return;
+				}
 
 				if (i < j) {
 					similarities = [].concat(similarities.slice(0, i), similarities.slice(i + 1, j), similarities[i], similarities.slice(j));
@@ -218,7 +220,7 @@ var electomat = (function() {
 				for (var k = 0; k < rows.length; k++) {
 					rows[k].insertBefore(rows[k].children[i], rows[k].children[j]);
 				}
-			}
+			};
 
 			var quicksort = function(left, right) {
 				if (left < right) {
@@ -234,7 +236,7 @@ var electomat = (function() {
 					quicksort(left, pivot - 1);
 					quicksort(pivot + 1, right);
 				}
-			}
+			};
 
 			// alternative implementation
 			var insertionsort = function() {
@@ -242,7 +244,7 @@ var electomat = (function() {
 					for (var j = i-1; j >= 2 && similarities[i] > similarities[j]; j--) {}
 					moveBefore(i, j + 1);
 				}
-			}
+			};
 
 			quicksort(2, similarities.length - 1);
 		};
