@@ -81,7 +81,7 @@ var electomat = (function() {
 
 	var getEnvLang = function(env) {
 		while (!env.hasAttribute('lang')) {
-			if (!env.parentNode) {
+			if (!env.parentNode || !env.parentNode.hasAttribute) {
 				return null;
 			} else {
 				env = env.parentNode;
