@@ -53,6 +53,22 @@ var electomat = (function() {
 		}, error);
 	};
 
+	var query = function(element, selector) {
+		if (selector[0] === '.') {
+			return element.getElementsByClassName(selector.substr(1))[0];
+		} else if (selector[0] === '#') {
+			return element.getElementById(selector.substr(1));
+		} else {
+			return element.getElementsByTagName(selector)[0];
+		}
+	};
+
+	var renderTemplate = function (template, wrapperType) {
+		var wrapper = document.createElement(wrapperType || 'div');
+		wrapper.innerHTML = template;
+		return wrapper.children[0];
+	};
+
 	/*** l10n ***/
 	var translations = {
 		'de': {
@@ -103,83 +119,107 @@ var electomat = (function() {
 	/*** create table ***/
 	var init = function(el) {
 		getJSON(el.getAttribute('src'), function(data) {
-			createTable(el, data);
+			el.parentNode.replaceChild(createTable(el, data), el);
 		});
 	};
 
 	var createTable = function(el, data) {
-		var table = document.createElement('table');
-		el.parentNode.replaceChild(table, el);
-			table.className = "electomat";
-			if (el.hasAttribute('lang')) {
-				table.setAttribute('lang', el.getAttribute('lang'));
-			}
+		var table = renderTemplate('<table class="electomat">' +
+				'<thead>' +
+					'<tr>' +
+						'<th></th>' +
+						'<th scope="col"></th>' +
+					'</tr>' +
+				'</thead>' +
+				'<tbody>' +
+				'</tbody>' +
+			'</table>');
 
-			var thead = document.createElement('thead');
-			table.appendChild(thead);
-			var tr = document.createElement('tr');
-			thead.appendChild(tr);
+		var tr = query(table, 'tr');
+		var th = query(table, 'th');
+		var tbody = query(table, 'tbody');
 
-			tr.innerHTML += '<th></th>';
-			tr.innerHTML += '<th scope="col">' + _("your choice", table); + '</th>'
-			forEach(data.partys, function(party) {
-				createTh(party, {'parent': tr});
-			});
+		if (el.hasAttribute('lang')) {
+			table.setAttribute('lang', el.getAttribute('lang'));
+		}
 
-			var tbody = document.createElement('tbody');
-			table.appendChild(tbody);
-				forEach(data.questions, function(question) {
-					createTr(question, {'parent': tbody, 'partys': data.partys});
-				});
-	}
+		th.textContent = _("your choice", el);
 
-	var createTh = function(party, param) {
-		var th = document.createElement('th');
-		th.scope = "col";
-		param.parent.appendChild(th);
-		th.innerHTML += '<span class="name">' + party.name + '</span>';
-		th.innerHTML += '<span class="similarity"></span>';
-	}
+		forEach(data.partys, function(party) {
+			tr.appendChild(createTh(party));
+		});
 
-	var createTr = function(question, param) {
-		var tr = document.createElement('tr');
-		param.parent.appendChild(tr);
-			tr.innerHTML += '<th class="question" scope="row">' + question + '</th>';
+		forEach(data.questions, function(question) {
+			tbody.appendChild(createTr(question, data.partys));
+		});
 
-			var td = document.createElement('td');
-			tr.appendChild(td);
+		return table;
+	};
 
-			var select = document.createElement('select');
-			td.appendChild(select);
-			select.innerHTML += '<option value="-1" selected>' + _("(no opinion)", param.parent) + '</option>';
-			select.innerHTML += '<option value="4">' + value2txt(4, param.parent) + '</option>';
-			select.innerHTML += '<option value="3">' + value2txt(3, param.parent) + '</option>';
-			select.innerHTML += '<option value="2">' + value2txt(2, param.parent) + '</option>';
-			select.innerHTML += '<option value="1">' + value2txt(1, param.parent) + '</option>';
-			select.innerHTML += '<option value="0">' + value2txt(0, param.parent) + '</option>';
-			select.addEventListener('change', function() {
-				setValue(td, select.children[select.selectedIndex].value);
+	var createTh = function(party) {
+		var th = renderTemplate('<th scope="col">' +
+				'<span class="name"></span>' +
+				'<span class="similarity"></span>' +
+			'</th>', 'tr');
+		var nameHeader = query(th, '.name');
+		nameHeader.textContent = party.name;
+		return th;
+	};
 
-				var table = td.parentNode.parentNode.parentNode;
-				sortCols(table);
-			});
+	var createTr = function(question, parties) {
+		var tr = renderTemplate('<tr>' +
+				'<th class="question" scope="row"></th>' +
+				'<td>' +
+					'<select>' +
+						'<option value="-1" selected="selected"></option>' +
+						'<option value="4"></option>' +
+						'<option value="3"></option>' +
+						'<option value="2"></option>' +
+						'<option value="1"></option>' +
+						'<option value="0"></option>' +
+					'</select>' +
+				'</td>' +
+			'</tr>', 'tbody');
 
-			forEach(param.partys, function(party) {
-				createTd(party, {'parent': tr, 'question': question});
-			});
-	}
+		var td = query(tr, 'td');
+		var th = query(tr, 'th');
+		var select = query(tr, 'select');
 
-	var createTd = function(party, param) {
-		var td = document.createElement('td');
-		param.parent.appendChild(td);
-		if (party.answers.hasOwnProperty(param.question)) {
-			var answer = party.answers[param.question];
+		th.textContent = question;
+
+		var el = document.createElement('div');
+		select.children[0].textContent = _("(no opinion)", el);
+		select.children[1].textContent = value2txt(4, el);
+		select.children[2].textContent = value2txt(3, el);
+		select.children[3].textContent = value2txt(2, el);
+		select.children[4].textContent = value2txt(1, el);
+		select.children[5].textContent = value2txt(0, el);
+
+		select.addEventListener('change', function() {
+			setValue(td, select.children[select.selectedIndex].value);
+
+			var table = td.parentNode.parentNode.parentNode;
+			sortCols(table);
+		});
+
+		forEach(parties, function(party) {
+			tr.appendChild(createTd(party, question));
+		});
+
+		return tr;
+	};
+
+	var createTd = function(party, question) {
+		var td = renderTemplate('<td></td>', 'tr');
+		if (party.answers.hasOwnProperty(question)) {
+			var answer = party.answers[question];
 			if (answer.hasOwnProperty('comment')) {
 				td.textContent = answer.comment;
 			}
 			setValue(td, answer.value);
 		}
-	}
+		return td;
+	};
 
 	var value2txt = function(value, ctx) {
 		if (value == 0) {
