@@ -56,8 +56,6 @@ var electomat = (function() {
 	var query = function(element, selector) {
 		if (selector[0] === '.') {
 			return element.getElementsByClassName(selector.substr(1))[0];
-		} else if (selector[0] === '#') {
-			return element.getElementById(selector.substr(1));
 		} else {
 			return element.getElementsByTagName(selector)[0];
 		}
@@ -113,6 +111,7 @@ var electomat = (function() {
 				return translations[lang][s];
 			}
 		}
+
 		return s;
 	};
 
@@ -155,8 +154,7 @@ var electomat = (function() {
 		};
 
 		var getValue = function(rows, rowI, colI) {
-			var row = rows[rowI];
-			var td = row.children[colI];
+			var td = rows[rowI].children[colI];
 			if (td.hasAttribute('data-value')) {
 				return parseInt(td.getAttribute('data-value'), 10);
 			}
@@ -185,7 +183,7 @@ var electomat = (function() {
 		var getSimilarities = function(rows) {
 			var n = rows[0].children.length;
 
-			var similarities = [null, null]; // skip question and user cols
+			var similarities = [null, null];  // skip question and user cols
 			for (var i = 2; i < n; i++) {
 				similarities.push(getSimilarity(rows, i));
 			}
@@ -211,8 +209,7 @@ var electomat = (function() {
 
 				if (i < j) {
 					similarities = [].concat(similarities.slice(0, i), similarities.slice(i + 1, j), similarities[i], similarities.slice(j));
-				}
-				else {
+				} else {
 					similarities = [].concat(similarities.slice(0, j), similarities[i], similarities.slice(j, i), similarities.slice(i + 1));
 				}
 
@@ -311,18 +308,18 @@ var electomat = (function() {
 			return tr;
 		};
 
-		var tr = query(table, 'tr');
-		var th = query(table, 'th');
+		var headRow = query(table, 'tr');
+		var userHead = query(table, 'th');
 		var tbody = query(table, 'tbody');
 
 		if (element.hasAttribute('lang')) {
 			table.setAttribute('lang', element.getAttribute('lang'));
 		}
 
-		th.textContent = _("your choice", element);
+		userHead.textContent = _("your choice", element);
 
 		forEach(data.partys, function(party) {
-			tr.appendChild(createTh(party));
+			headRow.appendChild(createTh(party));
 		});
 
 		forEach(data.questions, function(question) {
@@ -333,7 +330,7 @@ var electomat = (function() {
 	};
 
 	var init = function(element) {
-		getJSON(el.getAttribute('src'), function(data) {
+		getJSON(element.getAttribute('src'), function(data) {
 			element.parentNode.replaceChild(createTable(element, data), element);
 		});
 	};
