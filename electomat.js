@@ -246,23 +246,21 @@ var electomat = (function() {
 		el.setAttribute('title', value2txt(value, el));
 	};
 
-	var getValue = function(table, rowI, colI) {
-		var row = table.children[1].children[rowI];
+	var getValue = function(rows, rowI, colI) {
+		var row = rows[rowI];
 		var td = row.children[colI];
 		if (td.hasAttribute('data-value')) {
 			return parseInt(td.getAttribute('data-value'), 10);
 		}
 	};
 
-	var getSimilarity = function(table, partyI) {
-		var rows = table.children[1].children;
-
+	var getSimilarity = function(rows, partyI) {
 		var s = 0;
 		var k = 0;
 
 		for (var i = 0; i < rows.length; i++) {
-			var userV = getValue(table, i, 1);
-			var partyV = getValue(table, i, partyI);
+			var userV = getValue(rows, i, 1);
+			var partyV = getValue(rows, i, partyI);
 
 			if (typeof userV !== "undefined") {
 				if (typeof partyV !== "undefined") {
@@ -276,20 +274,20 @@ var electomat = (function() {
 		return 1 - s/k;
 	};
 
-	var getSimilarities = function(table) {
-		var n = table.children[0].children[0].children.length;
+	var getSimilarities = function(rows) {
+		var n = rows[0].children.length;
 
 		var similarities = [null, null]; // skip question and user cols
 		for (var i = 2; i < n; i++) {
-			similarities.push(getSimilarity(table, i));
+			similarities.push(getSimilarity(rows, i));
 		}
 		return similarities;
 	};
 
 	var sortCols = function(table) {
-		var similarities = getSimilarities(table);
 		var head = table.children[0].children[0];
 		var rows = table.children[1].children;
+		var similarities = getSimilarities(rows);
 
 		for (var i = 2; i < head.children.length; i++) {
 			var el = head.children[i].getElementsByClassName('similarity');
