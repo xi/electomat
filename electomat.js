@@ -25,7 +25,7 @@ var electomat = (function() {
 		for (var i = 0; i < items.length; i++) {
 			fn(items[i], i);
 		}
-	}
+	};
 
 	var ajax = function(url, success, error) {
 		var request = new XMLHttpRequest();
@@ -44,14 +44,14 @@ var electomat = (function() {
 			}
 		};
 		request.send();
-	}
+	};
 
 	var getJSON = function(url, success, error) {
 		ajax(url, function(request) {
 			var data = JSON.parse(request.responseText);
 			success(data, request);
 		}, error);
-	}
+	};
 
 	/*** l10n ***/
 	var translations = {
@@ -64,7 +64,7 @@ var electomat = (function() {
 			"full approval": "volle Zustimmung",
 			"your choice": "deine Meinung"
 		}
-	}
+	};
 
 	var getEnvLang = function(env) {
 		while (!env.hasAttribute('lang')) {
@@ -75,7 +75,7 @@ var electomat = (function() {
 			}
 		}
 		return env.getAttribute('lang');
-	}
+	};
 
 	var _ = function(s, env) {
 		var lang = getEnvLang(env);
@@ -98,14 +98,14 @@ var electomat = (function() {
 			}
 		}
 		return s;
-	}
+	};
 
 	/*** create table ***/
 	var init = function(el) {
 		getJSON(el.getAttribute('src'), function(data) {
 			createTable(el, data);
 		});
-	}
+	};
 
 	var createTable = function(el, data) {
 		var table = document.createElement('table');
@@ -195,7 +195,7 @@ var electomat = (function() {
 		} else {
 			return _('(no opinion)', ctx);
 		}
-	}
+	};
 
 	var setValue = function(el, value) {
 		if (value in ["0", "1", "2", "3", "4"]) {
@@ -204,7 +204,7 @@ var electomat = (function() {
 			el.removeAttribute('data-value');
 		}
 		el.setAttribute('title', value2txt(value, el));
-	}
+	};
 
 	var getValue = function(table, rowI, colI) {
 		var row = table.children[1].children[rowI];
@@ -212,7 +212,7 @@ var electomat = (function() {
 		if (td.hasAttribute('data-value')) {
 			return parseInt(td.getAttribute('data-value'), 10);
 		}
-	}
+	};
 
 	var getSimilarity = function(table, partyI) {
 		var rows = table.children[1].children;
@@ -234,7 +234,7 @@ var electomat = (function() {
 			}
 		}
 		return 1 - s/k;
-	}
+	};
 
 	var getSimilarities = function(table) {
 		var n = table.children[0].children[0].children.length;
@@ -244,7 +244,7 @@ var electomat = (function() {
 			similarities.push(getSimilarity(table, i));
 		}
 		return similarities;
-	}
+	};
 
 	var sortCols = function(table) {
 		var similarities = getSimilarities(table);
@@ -299,7 +299,7 @@ var electomat = (function() {
 		}
 
 		quicksort(2, similarities.length - 1);
-	}
+	};
 
 	/*** main ***/
 	document.addEventListener("DOMContentLoaded", function() {
