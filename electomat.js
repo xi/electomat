@@ -67,7 +67,6 @@ var electomat = (function() {
 		return wrapper.children[0];
 	};
 
-	/*** l10n ***/
 	var translations = {
 		'de': {
 			"(no opinion)": "(keine Meinung)",
@@ -115,7 +114,6 @@ var electomat = (function() {
 		return s;
 	};
 
-	/*** create table ***/
 	var createTable = function(element, data) {
 		var table = renderTemplate('<table class="electomat">' +
 				'<thead>' +
@@ -335,7 +333,6 @@ var electomat = (function() {
 		});
 	};
 
-	/*** main ***/
 	document.addEventListener("DOMContentLoaded", function() {
 		forEach(document.getElementsByClassName('electomat'), init);
 	});
