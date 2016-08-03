@@ -316,6 +316,15 @@ var electomat = (function() {
 			tbody.appendChild(createTr(question, data.partys));
 		});
 
+		element.addEventListener('scroll', function(event) {
+			forEach(table.querySelectorAll('.question'), function(el) {
+				el.style.left = event.target.scrollLeft + 'px';
+			});
+			forEach(table.querySelectorAll('thead th'), function(el) {
+				el.style.top = event.target.scrollTop + 'px';
+			});
+		});
+
 		return table;
 	};
 
