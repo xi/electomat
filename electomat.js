@@ -107,7 +107,7 @@ var electomat = (function() {
 	};
 
 	var createTable = function(element, data) {
-		var table = renderTemplate('<table class="electomat">' +
+		var table = renderTemplate('<table>' +
 				'<thead>' +
 					'<tr>' +
 						'<th></th>' +
@@ -321,7 +321,7 @@ var electomat = (function() {
 
 	var init = function(element) {
 		getJSON(element.getAttribute('src'), function(data) {
-			element.parentNode.replaceChild(createTable(element, data), element);
+			element.appendChild(createTable(element, data));
 		});
 	};
 
