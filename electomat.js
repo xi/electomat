@@ -181,8 +181,8 @@ var electomat = (function() {
 		};
 
 		var sortCols = function(table) {
-			var head = table.children[0].children[0];
-			var rows = table.children[1].children;
+			var head = table.querySelector('thead tr');
+			var rows = table.querySelectorAll('tbody tr');
 			var similarities = getSimilarities(rows);
 
 			for (var i = 2; i < head.children.length; i++) {
