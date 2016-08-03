@@ -53,14 +53,6 @@ var electomat = (function() {
 		}, error);
 	};
 
-	var query = function(element, selector) {
-		if (selector[0] === '.') {
-			return element.getElementsByClassName(selector.substr(1))[0];
-		} else {
-			return element.getElementsByTagName(selector)[0];
-		}
-	};
-
 	var renderTemplate = function (template, wrapperType) {
 		var wrapper = document.createElement(wrapperType || 'div');
 		wrapper.innerHTML = template;
@@ -249,7 +241,7 @@ var electomat = (function() {
 					'<span class="name"></span>' +
 					'<span class="similarity"></span>' +
 				'</th>', 'tr');
-			var nameHeader = query(th, '.name');
+			var nameHeader = th.querySelector('.name');
 			nameHeader.textContent = party.name;
 			return th;
 		};
@@ -281,9 +273,9 @@ var electomat = (function() {
 					'</td>' +
 				'</tr>', 'tbody');
 
-			var td = query(tr, 'td');
-			var th = query(tr, 'th');
-			var select = query(tr, 'select');
+			var td = tr.querySelector('td');
+			var th = tr.querySelector('th');
+			var select = tr.querySelector('select');
 
 			th.textContent = question;
 
@@ -306,9 +298,9 @@ var electomat = (function() {
 			return tr;
 		};
 
-		var headRow = query(table, 'tr');
-		var userHead = query(table, 'th');
-		var tbody = query(table, 'tbody');
+		var headRow = table.querySelector('tr');
+		var userHead = table.querySelector('th');
+		var tbody = table.querySelector('tbody');
 
 		if (element.hasAttribute('lang')) {
 			table.setAttribute('lang', element.getAttribute('lang'));
