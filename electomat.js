@@ -299,7 +299,7 @@ var electomat = (function() {
 		};
 
 		var headRow = table.querySelector('tr');
-		var userHead = table.querySelector('th');
+		var userHead = table.querySelectorAll('th')[1];
 		var tbody = table.querySelector('tbody');
 
 		if (element.hasAttribute('lang')) {
