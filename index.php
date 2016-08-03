@@ -11,6 +11,12 @@ if (!function_exists('http_negotiate_language')) {
 	<meta charset="utf-8">
 	<script type="text/javascript" src="electomat.js"></script>
 	<link rel="stylesheet" type="text/css" href="electomat.css"/>
+	<style>
+		body {
+			margin: 0;
+			height: 100vh;
+		}
+	</style>
 </head>
 
 <body>
