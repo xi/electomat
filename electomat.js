@@ -323,6 +323,8 @@ var electomat = (function() {
 			forEach(table.querySelectorAll('thead th'), function(el) {
 				el.style.top = event.target.scrollTop + 'px';
 			});
+		}, {
+			passive: true,
 		});
 
 		return table;
