@@ -112,15 +112,15 @@ var createTable = function(element, data) {
         var rows = table.querySelectorAll('tbody tr');
         var similarities = getSimilarities(rows);
 
-        for (var i = 2; i < head.children.length; i++) {
-            var el = head.children[i].getElementsByClassName('similarity');
+        for (let i = 2; i < head.children.length; i++) {
+            const el = head.children[i].getElementsByClassName('similarity');
             if (el) {
                 el[0].textContent = ' (' + Math.round(similarities[i] * 100) + '%)';
             }
         }
 
         var moveBefore = function(i, j) {
-            if (i == j || i == j-1) {
+            if (i === j || i === j - 1) {
                 return;
             }
 
@@ -167,9 +167,9 @@ var createTable = function(element, data) {
 
     var createTd = function(party, question) {
         var td = renderTemplate('<td></td>', 'tr');
-        if (party.answers.hasOwnProperty(question)) {
+        if (party.answers[question]) {
             var answer = party.answers[question];
-            if (answer.hasOwnProperty('comment')) {
+            if (answer.comment) {
                 td.textContent = answer.comment;
             }
             setValue(td, answer.value);
@@ -249,10 +249,8 @@ var createTable = function(element, data) {
     return table;
 };
 
-var init = async function(element) {
+document.querySelectorAll('.electomat').forEach(async element => {
     var r = await fetch(element.getAttribute('src'));
     var data = await r.json();
     element.appendChild(createTable(element, data));
-};
-
-document.querySelectorAll('.electomat').forEach(init);
+});
