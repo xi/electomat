@@ -30,6 +30,14 @@ const TRANSLATIONS = {
     },
 };
 
+const VALUE_LABELS = [
+    _('full disapproval'),
+    _('disapproval'),
+    _('neither/nor'),
+    _('approval'),
+    _('full approval'),
+];
+
 function _(s) {
     return TRANSLATIONS[document.lang]?.[s] ?? s;
 }
@@ -52,29 +60,14 @@ var createTable = function(element, data) {
             </tbody>
         </table>`);
 
-    var value2txt = function(value) {
-        if (value === 0) {
-            return _('full disapproval');
-        } else if (value == 1) {
-            return _('disapproval');
-        } else if (value == 2) {
-            return _('neither/nor');
-        } else if (value == 3) {
-            return _('approval');
-        } else if (value == 4) {
-            return _('full approval');
-        } else {
-            return _('(no opinion)');
-        }
-    };
-
     var setValue = function(el, value) {
         if (value in ['0', '1', '2', '3', '4']) {
             el.setAttribute('data-value', value);
+            el.setAttribute('title', VALUE_LABELS[parseInt(value, 10)]);
         } else {
             el.removeAttribute('data-value');
+            el.setAttribute('title', _('(no opinion)'));
         }
-        el.setAttribute('title', value2txt(value));
     };
 
     var getValue = function(rows, rowI, colI) {
@@ -214,11 +207,11 @@ var createTable = function(element, data) {
         th.textContent = question;
 
         select.children[0].textContent = _('(no opinion)');
-        select.children[1].textContent = value2txt(4);
-        select.children[2].textContent = value2txt(3);
-        select.children[3].textContent = value2txt(2);
-        select.children[4].textContent = value2txt(1);
-        select.children[5].textContent = value2txt(0);
+        select.children[1].textContent = VALUE_LABELS[4];
+        select.children[2].textContent = VALUE_LABELS[3];
+        select.children[3].textContent = VALUE_LABELS[2];
+        select.children[4].textContent = VALUE_LABELS[1];
+        select.children[5].textContent = VALUE_LABELS[0];
 
         select.addEventListener('change', () => {
             setValue(td, select.children[select.selectedIndex].value);
