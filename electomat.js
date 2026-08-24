@@ -152,14 +152,6 @@ var createTable = function(element, data) {
             }
         };
 
-        // alternative implementation
-        var insertionsort = function() {
-            for (var i = 2; i < head.children.length; i++) {
-                for (var j = i-1; j >= 2 && similarities[i] > similarities[j]; j--) {}
-                moveBefore(i, j + 1);
-            }
-        };
-
         quicksort(2, similarities.length - 1);
     };
 
