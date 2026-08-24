@@ -18,12 +18,6 @@
  *  the JSON data. You may solve this server-side.
  */
 
-var forEach = function(items, fn) {
-    for (var i = 0; i < items.length; i++) {
-        fn(items[i], i);
-    }
-};
-
 var renderTemplate = function(template, wrapperType) {
     var wrapper = document.createElement(wrapperType || 'div');
     wrapper.innerHTML = template;
@@ -262,7 +256,7 @@ var createTable = function(element, data) {
             sortCols(table);
         });
 
-        forEach(parties, party => {
+        parties.forEach(party => {
             tr.appendChild(createTd(party, question));
         });
 
@@ -279,19 +273,19 @@ var createTable = function(element, data) {
 
     userHead.textContent = _("your choice", element);
 
-    forEach(data.partys, party => {
+    data.partys.forEach(party => {
         headRow.appendChild(createTh(party));
     });
 
-    forEach(data.questions, question => {
+    data.questions.forEach(question => {
         tbody.appendChild(createTr(question, data.partys));
     });
 
     element.addEventListener('scroll', event => {
-        forEach(table.querySelectorAll('.question'), el => {
+        table.querySelectorAll('.question').forEach(el => {
             el.style.left = event.target.scrollLeft + 'px';
         });
-        forEach(table.querySelectorAll('thead th'), el => {
+        table.querySelectorAll('thead th').forEach(el => {
             el.style.top = event.target.scrollTop + 'px';
         });
     }, {
@@ -307,4 +301,4 @@ var init = async function(element) {
     element.appendChild(createTable(element, data));
 };
 
-forEach(document.getElementsByClassName('electomat'), init);
+document.querySelectorAll('.electomat').forEach(init);
