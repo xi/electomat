@@ -18,13 +18,7 @@
  *  the JSON data. You may solve this server-side.
  */
 
-var renderTemplate = function(template, wrapperType) {
-    var wrapper = document.createElement(wrapperType || 'div');
-    wrapper.innerHTML = template;
-    return wrapper.children[0];
-};
-
-var translations = {
+const TRANSLATIONS = {
     'de': {
         '(no opinion)': '(keine Meinung)',
         'full disapproval': 'Vollständige Ablehnung',
@@ -36,39 +30,14 @@ var translations = {
     },
 };
 
-var getEnvLang = function(env) {
-    while (!env.hasAttribute('lang')) {
-        if (!env.parentNode || !env.parentNode.hasAttribute) {
-            return null;
-        } else {
-            env = env.parentNode;
-        }
-    }
-    return env.getAttribute('lang');
-};
+function _(s) {
+    return TRANSLATIONS[document.lang]?.[s] ?? s;
+}
 
-var _ = function(s, env) {
-    var lang = getEnvLang(env);
-
-    if (!lang) {
-        return s;
-    }
-
-    if (translations.hasOwnProperty(lang)) {
-        if (translations[lang].hasOwnProperty(s)) {
-            return translations[lang][s];
-        }
-    }
-
-    // try again with tag only, e.g. 'en' instead of 'en-US'
-    lang = lang.split('-')[0];
-    if (translations.hasOwnProperty(lang)) {
-        if (translations[lang].hasOwnProperty(s)) {
-            return translations[lang][s];
-        }
-    }
-
-    return s;
+var renderTemplate = function(template, wrapperType) {
+    var wrapper = document.createElement(wrapperType || 'div');
+    wrapper.innerHTML = template;
+    return wrapper.children[0];
 };
 
 var createTable = function(element, data) {
@@ -85,17 +54,17 @@ var createTable = function(element, data) {
 
     var value2txt = function(value) {
         if (value === 0) {
-            return _('full disapproval', element);
+            return _('full disapproval');
         } else if (value == 1) {
-            return _('disapproval', element);
+            return _('disapproval');
         } else if (value == 2) {
-            return _('neither/nor', element);
+            return _('neither/nor');
         } else if (value == 3) {
-            return _('approval', element);
+            return _('approval');
         } else if (value == 4) {
-            return _('full approval', element);
+            return _('full approval');
         } else {
-            return _('(no opinion)', element);
+            return _('(no opinion)');
         }
     };
 
@@ -227,7 +196,7 @@ var createTable = function(element, data) {
         var tr = renderTemplate(`<tr>
                 <th class="question" scope="row"></th>
                 <td>
-                    '<select>
+                    <select>
                         <option value="-1" selected="selected"></option>
                         <option value="4"></option>
                         <option value="3"></option>
@@ -244,7 +213,7 @@ var createTable = function(element, data) {
 
         th.textContent = question;
 
-        select.children[0].textContent = _('(no opinion)', element);
+        select.children[0].textContent = _('(no opinion)');
         select.children[1].textContent = value2txt(4);
         select.children[2].textContent = value2txt(3);
         select.children[3].textContent = value2txt(2);
@@ -271,7 +240,7 @@ var createTable = function(element, data) {
         table.setAttribute('lang', element.getAttribute('lang'));
     }
 
-    userHead.textContent = _('your choice', element);
+    userHead.textContent = _('your choice');
 
     data.partys.forEach(party => {
         headRow.appendChild(createTh(party));
