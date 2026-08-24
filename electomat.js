@@ -28,14 +28,14 @@ var ajax = function(url, success, error) {
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
 
-    request.onload = function() {
+    request.onload = () => {
         if (request.status >= 200 && request.status < 400) {
             success(request);
         } else if (error) {
             error(request);
         }
     };
-    request.onerror = function() {
+    request.onerror = () => {
         if (error) {
             error(request);
         }
@@ -44,13 +44,13 @@ var ajax = function(url, success, error) {
 };
 
 var getJSON = function(url, success, error) {
-    ajax(url, function(request) {
+    ajax(url, request => {
         var data = JSON.parse(request.responseText);
         success(data, request);
     }, error);
 };
 
-var renderTemplate = function (template, wrapperType) {
+var renderTemplate = function(template, wrapperType) {
     var wrapper = document.createElement(wrapperType || 'div');
     wrapper.innerHTML = template;
     return wrapper.children[0];
@@ -283,12 +283,12 @@ var createTable = function(element, data) {
         select.children[4].textContent = value2txt(1);
         select.children[5].textContent = value2txt(0);
 
-        select.addEventListener('change', function() {
+        select.addEventListener('change', () => {
             setValue(td, select.children[select.selectedIndex].value);
             sortCols(table);
         });
 
-        forEach(parties, function(party) {
+        forEach(parties, party => {
             tr.appendChild(createTd(party, question));
         });
 
@@ -305,19 +305,19 @@ var createTable = function(element, data) {
 
     userHead.textContent = _("your choice", element);
 
-    forEach(data.partys, function(party) {
+    forEach(data.partys, party => {
         headRow.appendChild(createTh(party));
     });
 
-    forEach(data.questions, function(question) {
+    forEach(data.questions, question => {
         tbody.appendChild(createTr(question, data.partys));
     });
 
-    element.addEventListener('scroll', function(event) {
-        forEach(table.querySelectorAll('.question'), function(el) {
+    element.addEventListener('scroll', event => {
+        forEach(table.querySelectorAll('.question'), el => {
             el.style.left = event.target.scrollLeft + 'px';
         });
-        forEach(table.querySelectorAll('thead th'), function(el) {
+        forEach(table.querySelectorAll('thead th'), el => {
             el.style.top = event.target.scrollTop + 'px';
         });
     }, {
@@ -328,7 +328,7 @@ var createTable = function(element, data) {
 };
 
 var init = function(element) {
-    getJSON(element.getAttribute('src'), function(data) {
+    getJSON(element.getAttribute('src'), data => {
         element.appendChild(createTable(element, data));
     });
 };
