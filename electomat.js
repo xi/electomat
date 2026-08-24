@@ -8,14 +8,7 @@
  *  # usage
  *
  *  Create a JSON file with your data. See `example.json`.
- *  In your html, include `electomat.js` and `electomat.css`
- *  and create a HTML element like this:
- *
- *      <div class="electomat" src="example.json" lang="de"/>
- *
- *  Currently only english and german language are available.
- *  Please note that only the controls are translated, not
- *  the JSON data. You may solve this server-side.
+ *  Load it by attaching `?json=url-to-data.json` to the uRL.
  */
 
 const TRANSLATIONS = {
@@ -189,8 +182,8 @@ var createTable = function(data) {
     ]);
 };
 
-document.querySelectorAll('.electomat').forEach(async element => {
-    var r = await fetch(element.getAttribute('src'));
-    var data = await r.json();
+var element = document.querySelector('.electomat')
+var query = new URLSearchParams(location.search)
+fetch(query.get('json')).then(r => r.json()).then(data => {
     element.appendChild(createTable(data));
 });
