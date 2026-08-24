@@ -6,7 +6,7 @@ from urllib.request import urlopen
 from zipfile import ZipFile
 
 questions = []
-partys = []
+parties = []
 
 
 def parse_defs(fh):
@@ -26,9 +26,9 @@ def parse_defs(fh):
             question = int(question, 10)
             value = int(value, 10)
 
-            while len(partys) <= party:
-                partys.append({'answers': {}})
-            answers = partys[party]['answers']
+            while len(parties) <= party:
+                parties.append({'answers': {}})
+            answers = parties[party]['answers']
             q = questions[question]
             answers[q] = {'value': (value + 1) * 2}
 
@@ -37,9 +37,9 @@ def parse_defs(fh):
             party, name = match.groups()
             party = int(party)
 
-            while len(partys) <= party:
-                partys.append({'answers': []})
-            partys[party]['name'] = name
+            while len(parties) <= party:
+                parties.append({'answers': []})
+            parties[party]['name'] = name
 
 
 def parse_defs_stmts(fh):
@@ -50,7 +50,7 @@ def parse_defs_stmts(fh):
             party = int(party, 10)
             question = int(question, 10)
 
-            answers = partys[party]['answers']
+            answers = parties[party]['answers']
             q = questions[question]
             answers[q]['comment'] = comment
 
@@ -67,4 +67,4 @@ if __name__ == '__main__':
             elif name.endswith('module_definition_statements.js'):
                 with zfh.open(name) as fh:
                     parse_defs_stmts(io.TextIOWrapper(fh))
-    print(json.dumps({'partys': partys, 'questions': questions}, indent=2))
+    print(json.dumps({'lang': 'de', 'parties': parties, 'questions': questions}, indent=2))

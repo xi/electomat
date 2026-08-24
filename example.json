@@ -1,6 +1,7 @@
 {
+  "lang": "en",
   "questions": ["question1", "question2"],
-  "partys": [
+  "parties": [
     {
       "name": "party1",
       "answers": {

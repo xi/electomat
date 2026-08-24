@@ -32,7 +32,7 @@ const VALUE_LABELS = [
 ];
 
 function _(s) {
-    return TRANSLATIONS[document.lang]?.[s] ?? s;
+    return TRANSLATIONS[document.documentElement.lang]?.[s] ?? s;
 }
 
 function h(tag, attrs, children) {
@@ -175,15 +175,16 @@ var createTable = function(data) {
             h('tr', {}, [
                 h('th', {}, []),
                 h('th', {scope: 'col'}, [_('your choice')]),
-                ...data.partys.map(createTh),
+                ...data.parties.map(createTh),
             ]),
         ]),
-        h('tbody', {}, data.questions.map(question => createTr(question, data.partys))),
+        h('tbody', {}, data.questions.map(question => createTr(question, data.parties))),
     ]);
 };
 
 var element = document.querySelector('.electomat')
 var query = new URLSearchParams(location.search)
 fetch(query.get('json')).then(r => r.json()).then(data => {
+    document.documentElement.lang = data.lang;
     element.appendChild(createTable(data));
 });
