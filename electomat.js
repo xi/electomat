@@ -195,7 +195,7 @@ var createTr = function(question, parties) {
     return tr;
 };
 
-var createTable = function(element, data) {
+var createTable = function(data) {
     var table = renderTemplate(`<table>
             <thead>
                 <tr>
@@ -221,22 +221,11 @@ var createTable = function(element, data) {
         tbody.appendChild(createTr(question, data.partys));
     });
 
-    element.addEventListener('scroll', event => {
-        table.querySelectorAll('.question').forEach(el => {
-            el.style.left = event.target.scrollLeft + 'px';
-        });
-        table.querySelectorAll('thead th').forEach(el => {
-            el.style.top = event.target.scrollTop + 'px';
-        });
-    }, {
-        passive: true,
-    });
-
     return table;
 };
 
 document.querySelectorAll('.electomat').forEach(async element => {
     var r = await fetch(element.getAttribute('src'));
     var data = await r.json();
-    element.appendChild(createTable(element, data));
+    element.appendChild(createTable(data));
 });

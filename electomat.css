@@ -9,8 +9,14 @@
 }
 .electomat thead th,
 .electomat .question {
-    position: relative;
+    position: sticky;
     background: white;
+}
+.electomat thead th {
+    top: 0;
+}
+.electomat .question {
+    left: 0;
 }
 .electomat td {padding: 0.5em}
 .electomat thead {border-bottom: 1px solid}
