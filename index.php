@@ -9,7 +9,6 @@ if (!function_exists('http_negotiate_language')) {
 
 <head>
     <meta charset="utf-8">
-    <script type="text/javascript" src="electomat.js"></script>
     <link rel="stylesheet" type="text/css" href="electomat.css"/>
     <style>
         body {
@@ -21,5 +20,6 @@ if (!function_exists('http_negotiate_language')) {
 
 <body>
     <div class="electomat" src="<?=$_GET['json'] ? $_GET['json'] : 'example.json'?>" lang="<?=http_negotiate_language(array('en', 'de'))?>"></div>
+    <script type="module" src="electomat.js"></script>
 </body>
 </html>
