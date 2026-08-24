@@ -42,11 +42,18 @@ function _(s) {
     return TRANSLATIONS[document.lang]?.[s] ?? s;
 }
 
-var renderTemplate = function(template, wrapperType) {
-    var wrapper = document.createElement(wrapperType || 'div');
-    wrapper.innerHTML = template;
-    return wrapper.children[0];
-};
+function h(tag, attrs, children) {
+    var el = document.createElement(tag);
+    for (const attr in attrs) {
+        el[attr] = attrs[attr];
+    }
+    for (const child of children) {
+        if (child) {
+            el.append(child);
+        }
+    }
+    return el;
+}
 
 var setValue = function(el, value) {
     if (value in ['0', '1', '2', '3', '4']) {
@@ -136,92 +143,50 @@ var sortCols = function(table) {
 };
 
 var createTh = function(party) {
-    var th = renderTemplate(`<th scope="col">
-            <span class="name"></span>
-            <span class="similarity"></span>
-        </th>`, 'tr');
-    var nameHeader = th.querySelector('.name');
-    nameHeader.textContent = party.name;
-    return th;
+    return h('th', {scope: 'col'}, [
+        h('span', {className: 'name'}, [party.name]),
+        h('span', {className: 'similarity'}, []),
+    ]);
 };
 
 var createTd = function(party, question) {
-    var td = renderTemplate('<td></td>', 'tr');
-    if (party.answers[question]) {
-        var answer = party.answers[question];
-        if (answer.comment) {
-            td.textContent = answer.comment;
-        }
-        setValue(td, answer.value);
-    }
+    var answer = party.answers[question];
+    var td = h('td', {}, [answer?.comment]);
+    setValue(td, answer.value);
     return td;
 };
 
 var createTr = function(question, parties) {
-    var tr = renderTemplate(`<tr>
-            <th class="question" scope="row"></th>
-            <td>
-                <select>
-                    <option value="-1" selected="selected"></option>
-                    <option value="4"></option>
-                    <option value="3"></option>
-                    <option value="2"></option>
-                    <option value="1"></option>
-                    <option value="0"></option>
-                </select>
-            </td>
-        </tr>`, 'tbody');
-
-    var td = tr.querySelector('td');
-    var th = tr.querySelector('th');
-    var select = tr.querySelector('select');
-
-    th.textContent = question;
-
-    select.children[0].textContent = _('(no opinion)');
-    select.children[1].textContent = VALUE_LABELS[4];
-    select.children[2].textContent = VALUE_LABELS[3];
-    select.children[3].textContent = VALUE_LABELS[2];
-    select.children[4].textContent = VALUE_LABELS[1];
-    select.children[5].textContent = VALUE_LABELS[0];
-
-    select.addEventListener('change', () => {
-        setValue(td, select.children[select.selectedIndex].value);
-        sortCols(tr.closest('table'));
-    });
-
-    parties.forEach(party => tr.append(createTd(party, question)));
-
-    return tr;
+    return h('tr', {}, [
+        h('th', {className: 'question', scope: 'row'}, [question]),
+        h('td', {}, [
+            h('select', {onchange: event => {
+                setValue(event.target.closest('td'), event.target.value);
+                sortCols(event.target.closest('table'));
+            }}, [
+                h('option', {value: '-1', selected: true}, [_('(no opinion)')]),
+                h('option', {value: '4'}, [VALUE_LABELS[4]]),
+                h('option', {value: '3'}, [VALUE_LABELS[3]]),
+                h('option', {value: '2'}, [VALUE_LABELS[2]]),
+                h('option', {value: '1'}, [VALUE_LABELS[1]]),
+                h('option', {value: '0'}, [VALUE_LABELS[0]]),
+            ]),
+        ]),
+        ...parties.map(party => createTd(party, question)),
+    ]);
 };
 
 var createTable = function(data) {
-    var table = renderTemplate(`<table>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>`);
-
-    var headRow = table.querySelector('tr');
-    var userHead = table.querySelectorAll('th')[1];
-    var tbody = table.querySelector('tbody');
-
-    userHead.textContent = _('your choice');
-
-    data.partys.forEach(party => {
-        headRow.appendChild(createTh(party));
-    });
-
-    data.questions.forEach(question => {
-        tbody.appendChild(createTr(question, data.partys));
-    });
-
-    return table;
+    return h('table', {}, [
+        h('thead', {}, [
+            h('tr', {}, [
+                h('th', {}, []),
+                h('th', {scope: 'col'}, [_('your choice')]),
+                ...data.partys.map(createTh),
+            ]),
+        ]),
+        h('tbody', {}, data.questions.map(question => createTr(question, data.partys))),
+    ]);
 };
 
 document.querySelectorAll('.electomat').forEach(async element => {
