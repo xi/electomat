@@ -72,16 +72,16 @@ var _ = function(s, env) {
 };
 
 var createTable = function(element, data) {
-    var table = renderTemplate('<table>' +
-            '<thead>' +
-                '<tr>' +
-                    '<th></th>' +
-                    '<th scope="col"></th>' +
-                '</tr>' +
-            '</thead>' +
-            '<tbody>' +
-            '</tbody>' +
-        '</table>');
+    var table = renderTemplate(`<table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>`);
 
     var value2txt = function(value) {
         if (value === 0) {
@@ -202,10 +202,10 @@ var createTable = function(element, data) {
     };
 
     var createTh = function(party) {
-        var th = renderTemplate('<th scope="col">' +
-                '<span class="name"></span>' +
-                '<span class="similarity"></span>' +
-            '</th>', 'tr');
+        var th = renderTemplate(`<th scope="col">
+                <span class="name"></span>
+                <span class="similarity"></span>
+            </th>`, 'tr');
         var nameHeader = th.querySelector('.name');
         nameHeader.textContent = party.name;
         return th;
@@ -224,19 +224,19 @@ var createTable = function(element, data) {
     };
 
     var createTr = function(question, parties) {
-        var tr = renderTemplate('<tr>' +
-                '<th class="question" scope="row"></th>' +
-                '<td>' +
-                    '<select>' +
-                        '<option value="-1" selected="selected"></option>' +
-                        '<option value="4"></option>' +
-                        '<option value="3"></option>' +
-                        '<option value="2"></option>' +
-                        '<option value="1"></option>' +
-                        '<option value="0"></option>' +
-                    '</select>' +
-                '</td>' +
-            '</tr>', 'tbody');
+        var tr = renderTemplate(`<tr>
+                <th class="question" scope="row"></th>
+                <td>
+                    '<select>
+                        <option value="-1" selected="selected"></option>
+                        <option value="4"></option>
+                        <option value="3"></option>
+                        <option value="2"></option>
+                        <option value="1"></option>
+                        <option value="0"></option>
+                    </select>
+                </td>
+            </tr>`, 'tbody');
 
         var td = tr.querySelector('td');
         var th = tr.querySelector('th');
