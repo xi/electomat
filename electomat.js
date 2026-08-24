@@ -50,18 +50,11 @@ var renderTemplate = function(template, wrapperType) {
 
 var setValue = function(el, value) {
     if (value in ['0', '1', '2', '3', '4']) {
-        el.setAttribute('data-value', value);
-        el.setAttribute('title', VALUE_LABELS[parseInt(value, 10)]);
+        el.dataset.value = value;
+        el.title = VALUE_LABELS[parseInt(value, 10)];
     } else {
-        el.removeAttribute('data-value');
-        el.setAttribute('title', _('(no opinion)'));
-    }
-};
-
-var getValue = function(rows, rowI, colI) {
-    var td = rows[rowI].children[colI];
-    if (td.hasAttribute('data-value')) {
-        return parseInt(td.getAttribute('data-value'), 10);
+        delete el.dataset.value;
+        el.title = _('(no opinion)');
     }
 };
 
@@ -70,25 +63,26 @@ var getSimilarity = function(rows, partyI) {
     var k = 0;
 
     for (var i = 0; i < rows.length; i++) {
-        var userV = getValue(rows, i, 1);
-        var partyV = getValue(rows, i, partyI);
+        var userV = rows[i].children[1].dataset.value;
+        var partyV = rows[i].children[partyI].dataset.value;
 
-        if (typeof userV !== 'undefined') {
-            if (typeof partyV !== 'undefined') {
-                s += Math.pow(userV - partyV, 2) / 16;
+        if (userV) {
+            if (partyV) {
+                s += Math.pow(parseInt(userV, 10) - parseInt(partyV, 10), 2) / 16;
             } else {
                 s += 1/4;
             }
-            k++;
+            k += 1;
         }
     }
-    return 1 - s/k;
+    return 1 - s / k;
 };
 
 var getSimilarities = function(rows) {
     var n = rows[0].children.length;
 
-    var similarities = [null, null];  // skip question and user cols
+    // skip question and user cols
+    var similarities = [null, null];
     for (var i = 2; i < n; i++) {
         similarities.push(getSimilarity(rows, i));
     }
@@ -101,10 +95,8 @@ var sortCols = function(table) {
     var similarities = getSimilarities(rows);
 
     for (let i = 2; i < head.children.length; i++) {
-        const el = head.children[i].getElementsByClassName('similarity');
-        if (el) {
-            el[0].textContent = ' (' + Math.round(similarities[i] * 100) + '%)';
-        }
+        const el = head.children[i].querySelector('.similarity');
+        el.textContent = ` (${Math.round(similarities[i] * 100)}%)`;
     }
 
     var moveBefore = function(i, j) {
@@ -128,7 +120,7 @@ var sortCols = function(table) {
         if (left < right) {
             var pivot = left;
 
-            for (var i = pivot+1; i <= right; i++) {
+            for (var i = pivot + 1; i <= right; i++) {
                 if (similarities[i] > similarities[pivot]) {
                     moveBefore(i, pivot);
                     pivot++;
@@ -198,9 +190,7 @@ var createTr = function(question, parties) {
         sortCols(tr.closest('table'));
     });
 
-    parties.forEach(party => {
-        tr.appendChild(createTd(party, question));
-    });
+    parties.forEach(party => tr.append(createTd(party, question)));
 
     return tr;
 };
@@ -220,10 +210,6 @@ var createTable = function(element, data) {
     var headRow = table.querySelector('tr');
     var userHead = table.querySelectorAll('th')[1];
     var tbody = table.querySelector('tbody');
-
-    if (element.hasAttribute('lang')) {
-        table.setAttribute('lang', element.getAttribute('lang'));
-    }
 
     userHead.textContent = _('your choice');
 
