@@ -24,32 +24,6 @@ var forEach = function(items, fn) {
     }
 };
 
-var ajax = function(url, success, error) {
-    var request = new XMLHttpRequest();
-    request.open('GET', url, true);
-
-    request.onload = () => {
-        if (request.status >= 200 && request.status < 400) {
-            success(request);
-        } else if (error) {
-            error(request);
-        }
-    };
-    request.onerror = () => {
-        if (error) {
-            error(request);
-        }
-    };
-    request.send();
-};
-
-var getJSON = function(url, success, error) {
-    ajax(url, request => {
-        var data = JSON.parse(request.responseText);
-        success(data, request);
-    }, error);
-};
-
 var renderTemplate = function(template, wrapperType) {
     var wrapper = document.createElement(wrapperType || 'div');
     wrapper.innerHTML = template;
@@ -327,10 +301,10 @@ var createTable = function(element, data) {
     return table;
 };
 
-var init = function(element) {
-    getJSON(element.getAttribute('src'), data => {
-        element.appendChild(createTable(element, data));
-    });
+var init = async function(element) {
+    var r = await fetch(element.getAttribute('src'));
+    var data = await r.json();
+    element.appendChild(createTable(element, data));
 };
 
 forEach(document.getElementsByClassName('electomat'), init);
