@@ -5,7 +5,7 @@
     overflow: auto;
 }
 .electomat table {
-    border-collapse: collapse;
+    border-spacing: 0;
 }
 .electomat thead th,
 .electomat .question {
@@ -14,13 +14,14 @@
 }
 .electomat thead th {
     top: 0;
+    z-index: 1;
 }
 .electomat .question {
     left: 0;
 }
 .electomat td {padding: 0.5em}
-.electomat thead {border-bottom: 1px solid}
-.electomat td:nth-of-type(1), table.electomat th:nth-of-type(1) {border-right: 1px solid}
+.electomat thead th {border-bottom: 1px solid}
+.electomat .question, .electomat td:nth-of-type(1) {border-right: 1px solid}
 .electomat tbody tr:nth-of-type(even) {background: #eee}
 .electomat td[data-value="0"] {background: hsla(0,100%,52%,0.5)}
 .electomat td[data-value="1"] {background: hsla(24,100%,56%,0.5)}
