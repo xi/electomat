@@ -26,14 +26,14 @@ var renderTemplate = function(template, wrapperType) {
 
 var translations = {
     'de': {
-        "(no opinion)": "(keine Meinung)",
-        "full disapproval": "Vollständige Ablehnung",
-        "disapproval": "Ablehung",
-        "neither/nor": "weder/noch",
-        "approval": "Zustimmung",
-        "full approval": "volle Zustimmung",
-        "your choice": "deine Meinung"
-    }
+        '(no opinion)': '(keine Meinung)',
+        'full disapproval': 'Vollständige Ablehnung',
+        'disapproval': 'Ablehung',
+        'neither/nor': 'weder/noch',
+        'approval': 'Zustimmung',
+        'full approval': 'volle Zustimmung',
+        'your choice': 'deine Meinung',
+    },
 };
 
 var getEnvLang = function(env) {
@@ -100,7 +100,7 @@ var createTable = function(element, data) {
     };
 
     var setValue = function(el, value) {
-        if (value in ["0", "1", "2", "3", "4"]) {
+        if (value in ['0', '1', '2', '3', '4']) {
             el.setAttribute('data-value', value);
         } else {
             el.removeAttribute('data-value');
@@ -123,8 +123,8 @@ var createTable = function(element, data) {
             var userV = getValue(rows, i, 1);
             var partyV = getValue(rows, i, partyI);
 
-            if (typeof userV !== "undefined") {
-                if (typeof partyV !== "undefined") {
+            if (typeof userV !== 'undefined') {
+                if (typeof partyV !== 'undefined') {
                     s += Math.pow(userV - partyV, 2) / 16;
                 } else {
                     s += 1/4;
@@ -244,7 +244,7 @@ var createTable = function(element, data) {
 
         th.textContent = question;
 
-        select.children[0].textContent = _("(no opinion)", element);
+        select.children[0].textContent = _('(no opinion)', element);
         select.children[1].textContent = value2txt(4);
         select.children[2].textContent = value2txt(3);
         select.children[3].textContent = value2txt(2);
@@ -271,7 +271,7 @@ var createTable = function(element, data) {
         table.setAttribute('lang', element.getAttribute('lang'));
     }
 
-    userHead.textContent = _("your choice", element);
+    userHead.textContent = _('your choice', element);
 
     data.partys.forEach(party => {
         headRow.appendChild(createTh(party));
