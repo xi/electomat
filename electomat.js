@@ -24,11 +24,11 @@ const TRANSLATIONS = {
 };
 
 const VALUE_LABELS = [
-    _('full disapproval'),
-    _('disapproval'),
-    _('neither/nor'),
-    _('approval'),
-    _('full approval'),
+    'full disapproval',
+    'disapproval',
+    'neither/nor',
+    'approval',
+    'full approval',
 ];
 
 function _(s) {
@@ -51,7 +51,7 @@ function h(tag, attrs, children) {
 var setValue = function(el, value) {
     if (value in ['0', '1', '2', '3', '4']) {
         el.dataset.value = value;
-        el.title = VALUE_LABELS[parseInt(value, 10)];
+        el.title = _(VALUE_LABELS[parseInt(value, 10)]);
     } else {
         delete el.dataset.value;
         el.title = _('(no opinion)');
@@ -158,11 +158,11 @@ var createTr = function(question, parties) {
                 sortCols(event.target.closest('table'));
             }}, [
                 h('option', {value: '-1', selected: true}, [_('(no opinion)')]),
-                h('option', {value: '4'}, [VALUE_LABELS[4]]),
-                h('option', {value: '3'}, [VALUE_LABELS[3]]),
-                h('option', {value: '2'}, [VALUE_LABELS[2]]),
-                h('option', {value: '1'}, [VALUE_LABELS[1]]),
-                h('option', {value: '0'}, [VALUE_LABELS[0]]),
+                h('option', {value: '4'}, [_(VALUE_LABELS[4])]),
+                h('option', {value: '3'}, [_(VALUE_LABELS[3])]),
+                h('option', {value: '2'}, [_(VALUE_LABELS[2])]),
+                h('option', {value: '1'}, [_(VALUE_LABELS[1])]),
+                h('option', {value: '0'}, [_(VALUE_LABELS[0])]),
             ]),
         ]),
         ...parties.map(party => createTd(party, question)),
