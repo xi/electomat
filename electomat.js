@@ -68,14 +68,14 @@ var getSimilarity = function(rows, partyI) {
 
         if (userV) {
             if (partyV) {
-                s += Math.pow(parseInt(userV, 10) - parseInt(partyV, 10), 2) / 16;
+                s += Math.pow((parseInt(userV, 10) - parseInt(partyV, 10)) / 4, 2);
             } else {
                 s += 1/4;
             }
             k += 1;
         }
     }
-    return 1 - s / k;
+    return 1 - Math.sqrt(s / k);
 };
 
 var getSimilarities = function(rows) {
