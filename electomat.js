@@ -182,8 +182,8 @@ var createTable = function(data) {
     ]);
 };
 
-var element = document.querySelector('.electomat')
-var query = new URLSearchParams(location.search)
+var element = document.querySelector('.electomat');
+var query = new URLSearchParams(location.search);
 fetch(query.get('json')).then(r => r.json()).then(data => {
     document.documentElement.lang = data.lang;
     element.appendChild(createTable(data));
