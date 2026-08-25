@@ -135,50 +135,40 @@ var sortCols = function(table) {
     quicksort(2, similarities.length - 1);
 };
 
-var createTh = function(party) {
-    return h('th', {scope: 'col'}, [
-        h('span', {className: 'name'}, [party.name]),
-        h('span', {className: 'similarity'}, []),
-    ]);
-};
-
-var createTd = function(party, question) {
-    var answer = party.answers[question];
-    var td = h('td', {}, [answer?.comment]);
-    setValue(td, answer.value);
-    return td;
-};
-
-var createTr = function(question, parties) {
-    return h('tr', {}, [
-        h('th', {className: 'question', scope: 'row'}, [question]),
-        h('td', {}, [
-            h('select', {onchange: event => {
-                setValue(event.target.closest('td'), event.target.value);
-                sortCols(event.target.closest('table'));
-            }}, [
-                h('option', {value: '-1', selected: true}, [_('(no opinion)')]),
-                h('option', {value: '4'}, [_(VALUE_LABELS[4])]),
-                h('option', {value: '3'}, [_(VALUE_LABELS[3])]),
-                h('option', {value: '2'}, [_(VALUE_LABELS[2])]),
-                h('option', {value: '1'}, [_(VALUE_LABELS[1])]),
-                h('option', {value: '0'}, [_(VALUE_LABELS[0])]),
-            ]),
-        ]),
-        ...parties.map(party => createTd(party, question)),
-    ]);
-};
-
 var createTable = function(data) {
     return h('table', {}, [
         h('thead', {}, [
             h('tr', {}, [
                 h('th', {}, []),
                 h('th', {scope: 'col'}, [_('your choice')]),
-                ...data.parties.map(createTh),
+                ...data.parties.map(party => h('th', {scope: 'col'}, [
+                    h('span', {className: 'name'}, [party.name]),
+                    h('span', {className: 'similarity'}, []),
+                ])),
             ]),
         ]),
-        h('tbody', {}, data.questions.map(question => createTr(question, data.parties))),
+        h('tbody', {}, data.questions.map(question => h('tr', {}, [
+            h('th', {className: 'question', scope: 'row'}, [question]),
+            h('td', {}, [
+                h('select', {onchange: event => {
+                    setValue(event.target.closest('td'), event.target.value);
+                    sortCols(event.target.closest('table'));
+                }}, [
+                    h('option', {value: '-1', selected: true}, [_('(no opinion)')]),
+                    h('option', {value: '4'}, [_(VALUE_LABELS[4])]),
+                    h('option', {value: '3'}, [_(VALUE_LABELS[3])]),
+                    h('option', {value: '2'}, [_(VALUE_LABELS[2])]),
+                    h('option', {value: '1'}, [_(VALUE_LABELS[1])]),
+                    h('option', {value: '0'}, [_(VALUE_LABELS[0])]),
+                ]),
+            ]),
+            ...data.parties.map(party => {
+                var answer = party.answers[question];
+                var td = h('td', {}, [answer?.comment]);
+                setValue(td, answer.value);
+                return td;
+            }),
+        ]))),
     ]);
 };
 
