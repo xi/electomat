@@ -76,4 +76,8 @@ if __name__ == '__main__':
             elif name.endswith('module_definition_statements.js'):
                 with zfh.open(name) as fh:
                     parse_defs_stmts(io.TextIOWrapper(fh))
-    print(json.dumps({'lang': 'de', 'parties': parties, 'questions': questions}, indent=2))
+    print(json.dumps({
+        'lang': 'de',
+        'parties': parties,
+        'questions': questions,
+    }, indent=2, ensure_ascii=False))
