@@ -142,13 +142,13 @@ var createTable = function(data) {
                 h('th', {}, []),
                 h('th', {scope: 'col'}, [_('your choice')]),
                 ...data.parties.map(party => h('th', {scope: 'col'}, [
-                    h('span', {className: 'name', title: party.long_name || ''}, [party.name]),
+                    h('span', {title: party.long_name || ''}, [party.name]),
                     h('span', {className: 'similarity'}, []),
                 ])),
             ]),
         ]),
         h('tbody', {}, data.questions.map(question => h('tr', {}, [
-            h('th', {className: 'question', scope: 'row'}, [question]),
+            h('th', {scope: 'row'}, [question]),
             h('td', {}, [
                 h('select', {onchange: event => {
                     setValue(event.target.closest('td'), event.target.value);
