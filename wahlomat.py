@@ -80,4 +80,5 @@ if __name__ == '__main__':
         'lang': 'de',
         'parties': parties,
         'questions': questions,
+        'source': f'https://www.wahl-o-mat.de/{election}/',
     }, indent=2, ensure_ascii=False))
