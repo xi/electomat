@@ -41,6 +41,15 @@ def parse_defs(fh):
                 parties.append({'answers': []})
             parties[party]['name'] = name
 
+        match = re.match(r"WOMT_aParteien\[([0-9]+)\]\[0\]\[2\]='(.*)'", line)
+        if match:
+            party, long_name = match.groups()
+            party = int(party)
+
+            while len(parties) <= party:
+                parties.append({'answers': []})
+            parties[party]['long_name'] = long_name
+
 
 def parse_defs_stmts(fh):
     for line in fh:
