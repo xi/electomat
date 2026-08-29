@@ -14,16 +14,11 @@
 const TRANSLATIONS = {
     'de': {
         '(no opinion)': '(keine Meinung)',
-        'full disapproval': 'Vollständige Ablehnung',
-        'disapproval': 'Ablehung',
-        'neither/nor': 'weder/noch',
-        'approval': 'Zustimmung',
-        'full approval': 'volle Zustimmung',
         'your choice': 'deine Meinung',
     },
 };
 
-const VALUE_LABELS = [
+const FALLBACK_LABELS = [
     'full disapproval',
     'disapproval',
     'neither/nor',
@@ -48,10 +43,10 @@ function h(tag, attrs, children) {
     return el;
 }
 
-var setValue = function(el, value) {
+var setValue = function(el, value, labels) {
     if (value in ['0', '1', '2', '3', '4']) {
         el.dataset.value = value;
-        el.title = _(VALUE_LABELS[parseInt(value, 10)]);
+        el.title = labels[parseInt(value, 10)];
     } else {
         delete el.dataset.value;
         el.title = _('(no opinion)');
@@ -136,6 +131,8 @@ var sortCols = function(table) {
 };
 
 var createTable = function(data) {
+    var labels = data.labels ?? FALLBACK_LABELS;
+
     return h('table', {}, [
         h('thead', {}, [
             h('tr', {}, [
@@ -151,21 +148,21 @@ var createTable = function(data) {
             h('th', {scope: 'row'}, [question]),
             h('td', {}, [
                 h('select', {onchange: event => {
-                    setValue(event.target.closest('td'), event.target.value);
+                    setValue(event.target.closest('td'), event.target.value, labels);
                     sortCols(event.target.closest('table'));
                 }}, [
                     h('option', {value: '-1', selected: true}, [_('(no opinion)')]),
-                    h('option', {value: '4'}, [_(VALUE_LABELS[4])]),
-                    h('option', {value: '3'}, [_(VALUE_LABELS[3])]),
-                    h('option', {value: '2'}, [_(VALUE_LABELS[2])]),
-                    h('option', {value: '1'}, [_(VALUE_LABELS[1])]),
-                    h('option', {value: '0'}, [_(VALUE_LABELS[0])]),
+                    h('option', {value: '4'}, [labels[4]]),
+                    h('option', {value: '3'}, [labels[3]]),
+                    h('option', {value: '2'}, [labels[2]]),
+                    h('option', {value: '1'}, [labels[1]]),
+                    h('option', {value: '0'}, [labels[0]]),
                 ]),
             ]),
             ...data.parties.map(party => {
                 var answer = party.answers[question];
                 var td = h('td', {}, [answer?.comment]);
-                setValue(td, answer.value);
+                setValue(td, answer.value, labels);
                 return td;
             }),
         ]))),

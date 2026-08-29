@@ -80,5 +80,12 @@ if __name__ == '__main__':
         'lang': 'de',
         'parties': parties,
         'questions': questions,
+        'labels': [
+            'Vollständige Ablehnung',
+            'Ablehung',
+            'weder/noch',
+            'Zustimmung',
+            'volle Zustimmung',
+        ],
         'source': f'https://www.wahl-o-mat.de/{election}/',
     }, indent=2, ensure_ascii=False))
